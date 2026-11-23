@@ -1250,14 +1250,15 @@ svg.lucide, [data-lucide] {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
+  justify-content: flex-end;
+  gap: 3px;
   color: var(--texto-mutado);
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   position: relative;
-  padding-bottom: 4px;
+  padding-bottom: 6px;
+  height: 100%;
   transition: color 0.18s ease;
 }
 
@@ -1290,18 +1291,26 @@ svg.lucide, [data-lucide] {
   }
 }
 
-.nav-tab-btn:not(.nav-tab-fab).active::after {
-  content: "";
-  position: absolute;
-  bottom: 0px;
+/* Indicador de Aba Ativa (Pílula Verde abaixo do texto conforme Figma) */
+.nav-tab-btn .tab-indicator {
   width: 20px;
   height: 3px;
-  background-color: var(--verde-floresta-700);
+  background-color: transparent;
   border-radius: var(--raio-pill);
+  transition: background-color 0.18s ease, transform 0.18s ease, opacity 0.18s ease;
+  margin-top: 1px;
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.nav-tab-btn.active .tab-indicator {
+  background-color: var(--verde-floresta-700);
+  opacity: 1;
+  transform: scaleX(1);
 }
 
 @media (prefers-color-scheme: dark) {
-  .nav-tab-btn:not(.nav-tab-fab).active::after {
+  .nav-tab-btn.active .tab-indicator {
     background-color: var(--verde-folha-400);
   }
 }
@@ -1313,8 +1322,8 @@ svg.lucide, [data-lucide] {
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  padding-bottom: 2px;
-  transform: translateY(-12px);
+  padding-bottom: 6px;
+  transform: translateY(-16px);
 }
 
 .fab-circle {
@@ -1329,13 +1338,13 @@ svg.lucide, [data-lucide] {
   box-shadow: 0 6px 18px rgba(45, 106, 79, 0.4), 0 2px 6px rgba(0, 0, 0, 0.1);
   position: relative;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background 0.25s ease;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 @media (prefers-color-scheme: dark) {
   .fab-circle {
-    background: linear-gradient(135deg, var(--verde-floresta-600), var(--verde-floresta-800));
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 14px rgba(82, 183, 136, 0.25);
+    background: linear-gradient(135deg, rgb(64, 145, 108) 0%, rgb(27, 67, 50) 100%);
+    box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.5), 0px 0px 14px 0px rgba(82, 183, 136, 0.25);
   }
 }
 
@@ -1351,8 +1360,8 @@ svg.lucide, [data-lucide] {
 }
 
 .nav-tab-btn.nav-tab-fab.active .fab-circle {
-  background: linear-gradient(135deg, var(--verde-folha-600), var(--verde-floresta-700));
-  box-shadow: 0 6px 20px rgba(82, 183, 136, 0.5), 0 0 0 3px rgba(82, 183, 136, 0.35);
+  background: linear-gradient(135deg, rgb(82, 183, 136) 0%, rgb(45, 106, 79) 100%);
+  box-shadow: 0 6px 22px rgba(82, 183, 136, 0.55), 0 0 16px rgba(82, 183, 136, 0.35);
   transform: scale(1.05);
 }
 
