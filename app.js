@@ -312,7 +312,6 @@ class JardimApp {
         <div class="section-title">
           <span>Recomendados para você</span>
           <span class="badge-nivel ${NIVEIS[this.userLevel].slug}">
-            <i data-lucide="${NIVEIS[this.userLevel].icone}" class="badge-icon"></i>
             Nível ${NIVEIS[this.userLevel].nome}
           </span>
         </div>
@@ -480,7 +479,7 @@ class JardimApp {
     this.dom.content.innerHTML = `
       <div class="nav-back-bar">
         <button id="btn-back-to-inicio" class="btn-back" title="Voltar ao Início" aria-label="Voltar">
-          <i data-lucide="arrow-left"></i>
+          <svg class="btn-back-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
         </button>
         <div>
           <h2 class="nav-back-title" style="display: flex; align-items: center; gap: 8px;">
@@ -497,13 +496,13 @@ class JardimApp {
             Todos (${itensDoModulo.length})
           </button>
           <button class="filter-chip ${this.currentFilter === 1 ? 'active' : ''}" data-filter="1">
-            <i data-lucide="seedling" class="chip-icon"></i> Iniciante (${itensDoModulo.filter(i => i.nivel === 1).length})
+            Iniciante (${itensDoModulo.filter(i => i.nivel === 1).length})
           </button>
           <button class="filter-chip ${this.currentFilter === 2 ? 'active' : ''}" data-filter="2">
-            <i data-lucide="sprout" class="chip-icon"></i> Avançado (${itensDoModulo.filter(i => i.nivel === 2).length})
+            Avançado (${itensDoModulo.filter(i => i.nivel === 2).length})
           </button>
           <button class="filter-chip ${this.currentFilter === 3 ? 'active' : ''}" data-filter="3">
-            <i data-lucide="tree-pine" class="chip-icon"></i> Pro (${itensDoModulo.filter(i => i.nivel === 3).length})
+            Pro (${itensDoModulo.filter(i => i.nivel === 3).length})
           </button>
         </div>
       </section>
@@ -534,13 +533,13 @@ class JardimApp {
       chip.addEventListener('click', () => {
         const f = chip.dataset.filter;
         this.currentFilter = f === 'todos' ? 'todos' : parseInt(f, 10);
-        this.renderModulo(this.currentModule);
+        this.render();
       });
     });
 
     document.getElementById('btn-filter-all')?.addEventListener('click', () => {
       this.currentFilter = 'todos';
-      this.renderModulo(this.currentModule);
+      this.render();
     });
 
     this.attachItemCardEvents();
@@ -564,7 +563,7 @@ class JardimApp {
     this.dom.content.innerHTML = `
       <div class="nav-back-bar">
         <button id="btn-back-detail" class="btn-back" title="Voltar" aria-label="Voltar">
-          <i data-lucide="arrow-left"></i>
+          <svg class="btn-back-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
         </button>
         <span style="font-size: 0.85rem; font-weight: 600; color: var(--texto-secundario); display: flex; align-items: center; gap: 6px;">
           <i data-lucide="${moduloObj?.icone || 'sprout'}"></i> ${moduloObj ? moduloObj.nome : 'Voltar'}
@@ -581,7 +580,7 @@ class JardimApp {
         <article class="detail-header-card">
           <div class="detail-top-meta">
             <span class="badge-nivel ${nivelObj.slug}">
-              <i data-lucide="${nivelObj.icone}" class="badge-icon"></i> Nível ${nivelObj.nome}
+              Nível ${nivelObj.nome}
             </span>
             <span style="font-size: 0.8rem; font-weight: 500; color: var(--texto-mutado); display: flex; align-items: center; gap: 5px;">
               <i data-lucide="${moduloObj?.icone || 'sprout'}"></i> ${moduloObj?.nome || ''}
@@ -787,13 +786,13 @@ class JardimApp {
         </div>
       </section>
 
-      <!-- Nota Oficial sobre o MVP -->
-      <article class="mvp-notes-card">
+      <!-- Informações sobre o Aplicativo -->
+      <article class="about-notes-card">
         <h4 style="display: flex; align-items: center; gap: 6px;">
-          <i data-lucide="info" style="width: 16px; height: 16px;"></i> Sobre o MVP Jardim de Bolso (v0.1)
+          <i data-lucide="info" style="width: 16px; height: 16px;"></i> Sobre o Jardim de Bolso
         </h4>
         <p>
-          O Jardim de Bolso é um guia de bolso direto ao ponto. Ele funciona totalmente sem login, 
+          O Jardim de Bolso é um guia prático e completo de jardinagem e paisagismo direto ao ponto. Ele funciona totalmente sem login, 
           com favoritos e nível salvos diretamente no seu dispositivo.
         </p>
         <p style="margin-top: 8px;">
@@ -810,7 +809,7 @@ class JardimApp {
         const lvl = parseInt(card.dataset.level, 10);
         this.saveUserLevel(lvl);
         this.showToast(`Nível alterado para ${NIVEIS[lvl].nome}`, 'check-circle-2');
-        this.renderNivel();
+        this.render();
       });
     });
   }
@@ -837,7 +836,7 @@ class JardimApp {
               </span>
             </div>
             <span class="badge-nivel ${nivelObj.slug}">
-              <i data-lucide="${nivelObj.icone}" class="badge-icon"></i> Nível ${nivelObj.nome}
+              Nível ${nivelObj.nome}
             </span>
           </div>
 

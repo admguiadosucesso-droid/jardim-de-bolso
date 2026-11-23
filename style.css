@@ -99,32 +99,38 @@
 }
 
 html, body {
-  min-height: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
   background-color: #0b1510;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--texto-principal);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  overflow-x: hidden;
+  align-items: center;
+  overflow: hidden; /* A janela do navegador nunca rola */
 }
 
 /* Container Responsivo Estilo Celular (Max 480px no Desktop) */
 #app-viewport {
   width: 100%;
   max-width: var(--max-largura-mobile);
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
   background-color: var(--bg-app);
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow: hidden; /* Apenas o interior do app rola */
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.45);
 }
 
 @media (min-width: 520px) {
   #app-viewport {
-    min-height: 94vh;
-    margin: 24px 0;
+    height: 94vh;
+    max-height: 840px; /* Altura confortável simulando celular com ~6 itens visíveis */
+    margin: auto;
     border-radius: 28px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -146,7 +152,8 @@ svg.lucide, [data-lucide] {
 
 /* Header Superior Fixo */
 .app-header {
-  position: sticky;
+  position: relative;
+  flex-shrink: 0;
   top: 0;
   z-index: 40;
   background-color: rgba(27, 67, 50, 0.95);
@@ -229,14 +236,32 @@ svg.lucide, [data-lucide] {
   background: rgba(255, 255, 255, 0.25);
 }
 
-/* Área de Conteúdo Principal */
+/* Área de Conteúdo Principal (Rolagem Interna Estrita) */
 .main-content {
   flex: 1;
-  padding: 16px 18px calc(var(--altura-bottom-bar) + 24px) 18px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 18px 24px 18px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   animation: fadeIn 0.2s ease-out;
+  scrollbar-width: thin;
+  scrollbar-color: var(--borda-media) transparent;
+}
+
+.main-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: var(--borda-media);
+  border-radius: 9999px;
 }
 
 /* Caixa de Busca Global */
@@ -434,19 +459,20 @@ svg.lucide, [data-lucide] {
 .badge-nivel {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 9px;
+  justify-content: center;
+  padding: 5px 12px; /* Padding ajustado, harmonioso e completo */
   border-radius: var(--raio-pill);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: capitalize;
   border: 1px solid transparent;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .badge-icon {
-  width: 12px;
-  height: 12px;
+  display: none !important;
 }
 
 .badge-nivel.iniciante {
@@ -471,35 +497,34 @@ svg.lucide, [data-lucide] {
 .filter-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 4px 0 8px 0;
-  scrollbar-width: none;
-}
-
-.filter-bar::-webkit-scrollbar {
-  display: none;
+  gap: 6px;
+  width: 100%;
+  padding: 2px 0 6px 0;
+  box-sizing: border-box;
 }
 
 .filter-chip {
+  flex: 1;
+  min-width: 0;
   background-color: var(--bg-card);
   border: 1px solid var(--borda-media);
   color: var(--texto-secundario);
-  padding: 7px 14px;
+  padding: 8px 6px; /* Padding ideal para todos os 4 chips caberem completos */
   border-radius: var(--raio-pill);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
   transition: all 0.15s ease;
 }
 
-.chip-icon {
-  width: 13px;
-  height: 13px;
+.chip-icon, .filter-chip svg {
+  display: none !important;
 }
 
 .filter-chip.active {
@@ -507,6 +532,19 @@ svg.lucide, [data-lucide] {
   color: #ffffff;
   border-color: var(--verde-floresta-800);
   box-shadow: 0 2px 8px rgba(27, 67, 50, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  .filter-chip {
+    background-color: var(--bg-card);
+    border-color: var(--borda-suave);
+    color: #a3c2b2;
+  }
+  .filter-chip.active {
+    background-color: var(--verde-floresta-700);
+    color: #ffffff;
+    border-color: var(--verde-folha-500);
+  }
 }
 
 /* Lista de Itens (Cards de Módulo & Busca) */
@@ -625,27 +663,50 @@ svg.lucide, [data-lucide] {
 }
 
 .btn-back {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  min-height: 42px !important;
+  max-width: 42px !important;
+  max-height: 42px !important;
+  aspect-ratio: 1 / 1 !important;
+  flex-shrink: 0 !important;
+  border-radius: 12px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
   background-color: var(--bg-card);
   border: 1px solid var(--borda-media);
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
   color: var(--texto-principal);
+  cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.btn-back svg {
-  width: 18px;
-  height: 18px;
+.btn-back-svg, .btn-back svg {
+  width: 20px !important;
+  height: 20px !important;
+  stroke: currentColor !important;
+  display: block !important;
+  flex-shrink: 0 !important;
 }
 
 .btn-back:hover {
   background-color: var(--verde-folha-50);
   border-color: var(--verde-folha-400);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-back {
+    background-color: var(--bg-card);
+    border-color: var(--borda-suave);
+    color: #eef5f1;
+  }
+  .btn-back-svg, .btn-back svg {
+    stroke: #eef5f1 !important;
+  }
 }
 
 .nav-back-title {
@@ -997,7 +1058,7 @@ svg.lucide, [data-lucide] {
   color: var(--texto-secundario);
 }
 
-.mvp-notes-card {
+.about-notes-card {
   background-color: var(--bg-card-subtle);
   border: 1px dashed var(--borda-media);
   border-radius: var(--raio-card);
@@ -1007,7 +1068,7 @@ svg.lucide, [data-lucide] {
   line-height: 1.5;
 }
 
-.mvp-notes-card h4 {
+.about-notes-card h4 {
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--texto-principal);
@@ -1016,7 +1077,8 @@ svg.lucide, [data-lucide] {
 
 /* Barra Inferior Fixa (Bottom Navigation) */
 .bottom-nav {
-  position: sticky;
+  position: relative;
+  flex-shrink: 0;
   bottom: 0;
   width: 100%;
   height: var(--altura-bottom-bar);

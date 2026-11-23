@@ -1,6 +1,6 @@
 # Jardim de Bolso 🌿
 
-> **Documentação do MVP clicável · Versão 0.1**  
+> **Documentação da Aplicação · Versão Oficial**  
 > Guia prático de bolso de jardinagem e paisagismo em formato de aplicação web mobile-first e PWA.
 
 ---
@@ -46,7 +46,7 @@ O **Jardim de Bolso** foi concebido para entregar consulta rápida, prática e c
 5. **Nível do Usuário & Perfil**:
    - Seleção intuitiva de nível: *Iniciante*, *Avançado* ou *Pro*.
    - Define o comportamento padrão dos filtros em todas as listas.
-   - Informações institucionais sobre o MVP v0.1.
+   - Informações institucionais sobre a aplicação.
 
 6. **Ícones Premium & PWA Offline**:
    - **Ícones Vetoriais Lucide**: Visual moderno, limpo e profissional sem emojis crus.

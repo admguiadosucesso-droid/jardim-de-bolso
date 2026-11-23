@@ -1,4 +1,4 @@
-// Jardim de Bolso - Banco de Dados do MVP v0.1
+// Jardim de Bolso - Banco de Dados Oficial
 // 60 Itens completos (15 por categoria) em 4 módulos e 3 níveis de experiência
 // Fotos reais em alta resolução e vídeos integrados do YouTube
 // Ícones Premium via Lucide
