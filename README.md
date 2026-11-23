@@ -21,20 +21,21 @@ O **Jardim de Bolso** foi concebido para entregar consulta rápida, prática e c
 ## 📱 Telas e Recursos Implementados
 
 1. **Início**:
-   - Barra de busca global em tempo real (procura em títulos e descrições com contador de resultados).
-   - **Dica do Dia**: Calendário dinâmico com 31 dicas práticas de jardinagem (uma dica para cada dia do mês).
-   - 4 Cartões de módulos com contadores de itens.
+   - Barra de busca global em tempo real (procura em títulos e descrições com contador de resultados e correspondência estrita por nome).
+   - **Dica do Dia**: Calendário dinâmico com 31 dicas práticas de jardinagem (uma dica para cada dia do mês sincronizada automaticamente).
+   - 4 Cartões de módulos com contadores de itens (15 itens em cada categoria, totalizando 60 itens).
    - Itens recomendados com base no nível configurado no perfil.
 
 2. **Lista do Módulo**:
-   - Módulos disponíveis: **Ferramentas (6)**, **Plantas (6)**, **Adubação (5)** e **Serviços (6)**. Totalizando 23 itens de referência.
+   - Módulos disponíveis: **Ferramentas (15)**, **Plantas (15)**, **Adubação (15)** e **Serviços (15)**. Totalizando **60 itens completos** de referência com fotos em alta resolução e vídeos integrados do YouTube.
    - Chips de filtro por nível (`Todos`, `Iniciante`, `Avançado` e `Pro`). Abre automaticamente filtrado pelo nível do perfil.
    - Botão "Voltar" navegável.
 
 3. **Detalhes do Item**:
    - Informações completas do item, badge de nível e descrição aprofundada.
-   - **Espaço de vídeo 16:9** (para Ferramentas e Serviços) com player e modal informativo.
-   - **Ficha Técnica**: Rótulos e valores de cultivo (ex.: Luz, Rega, Tamanho, Cuidados, Doses).
+   - **Hero Banner com foto real em alta resolução** de cada item.
+   - **Player de Vídeo do YouTube integrado** (proporção 16:9) e link direto para assistir no YouTube.
+   - **Ficha Técnica**: Rótulos e valores de cultivo (ex.: Luz, Rega, Tamanho, Cuidados, Doses, Capacidade de corte).
    - **Passo a Passo com 4 Etapas** (exclusivo para Serviços).
    - Botão **Salvar no Meu Jardim** com feedback visual imediato (toast).
 
@@ -58,6 +59,7 @@ O **Jardim de Bolso** foi concebido para entregar consulta rápida, prática e c
 
 - **Mobile-first**: Largura máxima de 480px, centralizado na visualização em desktop.
 - **Paleta Botânica**: Verde-floresta (`#1b4332`), Verde-folha claro (`#d8f3dc`, `#74c69d`), Âmbar (`#e9a63a`) e fundo pálido orgânico (`#f3f6f3`).
+- **Alto Contraste WCAG**: Textos em caixas e cartões brancos utilizam preto botânico (`#101c15`) e verde floresta escuro (`#1b4332`), garantindo máxima legibilidade.
 - **Tipografia**: Bricolage Grotesque & Plus Jakarta Sans.
 - **Modo Escuro**: Detecção e transição automática com base na preferência do sistema.
 
