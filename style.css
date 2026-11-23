@@ -63,7 +63,7 @@
 /* Suporte a Tema Escuro */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-app: #0e1813;
+    --bg-app: #0d1511;
     --bg-card: #15241d;
     --bg-card-subtle: #1c2e25;
     --texto-principal: #eef5f1;
@@ -102,7 +102,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #0b1510;
+  background-color: #0d1511;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--texto-principal);
   display: flex;
