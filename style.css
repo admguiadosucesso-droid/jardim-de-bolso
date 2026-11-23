@@ -1197,13 +1197,12 @@ svg.lucide, [data-lucide] {
   width: 100%;
   height: var(--altura-bottom-bar);
   z-index: 50;
-  filter: drop-shadow(0 -4px 16px rgba(0, 0, 0, 0.08));
   overflow: visible;
 }
 
 @media (prefers-color-scheme: dark) {
   .bottom-nav-wrapper {
-    filter: drop-shadow(0 -4px 20px rgba(0, 0, 0, 0.45));
+    filter: none;
   }
 }
 
@@ -1245,12 +1244,16 @@ svg.lucide, [data-lucide] {
 
 .nav-svg-path {
   fill: #ffffff;
+  stroke: rgba(0, 0, 0, 0.06);
+  stroke-width: 0.8px;
   transition: fill 0.25s ease;
 }
 
 @media (prefers-color-scheme: dark) {
   .nav-svg-path {
     fill: #15241d;
+    stroke: rgba(255, 255, 255, 0.05);
+    stroke-width: 0.8px;
   }
 }
 
@@ -1292,7 +1295,7 @@ svg.lucide, [data-lucide] {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 18px rgba(45, 106, 79, 0.4), 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 14px rgba(45, 106, 79, 0.35), 0 0 10px rgba(82, 183, 136, 0.2);
   position: relative;
   transform: translateY(-24px);
   transition: box-shadow 0.25s ease, background 0.25s ease;
@@ -1301,7 +1304,7 @@ svg.lucide, [data-lucide] {
 @media (prefers-color-scheme: dark) {
   .floating-bubble .fab-circle {
     background: linear-gradient(135deg, rgb(64, 145, 108) 0%, rgb(27, 67, 50) 100%);
-    box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.5), 0px 0px 14px 0px rgba(82, 183, 136, 0.25);
+    box-shadow: 0 4px 14px rgba(45, 106, 79, 0.4), 0 0 12px rgba(82, 183, 136, 0.25);
   }
 }
 
@@ -1333,10 +1336,10 @@ svg.lucide, [data-lucide] {
   transform: scale(1);
 }
 
-/* Traço Indicador Deslizante (acompanha o círculo flutuante e o ícone selecionado) */
+/* Traço Indicador Deslizante (subido para perto das palavras e da curva) */
 .active-tab-indicator-pill {
   position: absolute;
-  bottom: 6px;
+  bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
   width: 20px;
@@ -1384,7 +1387,7 @@ svg.lucide, [data-lucide] {
 /* Ícones estáticos das abas */
 .nav-tab-btn .tab-icon {
   position: absolute;
-  top: 24px;
+  top: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1398,15 +1401,16 @@ svg.lucide, [data-lucide] {
   stroke-width: 2.2px;
 }
 
-/* Quando a aba está ativa, seu ícone estático suaviza pois a bolinha flutua sobre ela */
+/* Quando a aba está ativa, seu ícone estático é totalmente ocultado para não vazar atrás da bolinha */
 .nav-tab-btn.active .tab-icon {
   opacity: 0;
-  transform: translateY(-8px) scale(0.5);
+  visibility: hidden;
   pointer-events: none;
 }
 
 .nav-tab-btn:not(.active) .tab-icon {
   opacity: 1;
+  visibility: visible;
   transform: translateY(0) scale(1);
 }
 
@@ -1420,10 +1424,10 @@ svg.lucide, [data-lucide] {
   }
 }
 
-/* Nome do elemento: posicionado fixo na base, abaixo da curvatura do entalhe */
+/* Nome do elemento: mais alto, perto da curva com espaçamento refinado */
 .nav-tab-btn .tab-label {
   position: absolute;
-  bottom: 14px;
+  bottom: 22px;
   font-size: 0.72rem;
   font-weight: 600;
   white-space: nowrap;
