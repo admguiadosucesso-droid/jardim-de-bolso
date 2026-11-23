@@ -26,6 +26,8 @@ class JardimApp {
       userLevelHeaderPill: document.getElementById('user-level-pill'),
       userLevelHeaderText: document.getElementById('user-level-header-text'),
       favCountBadge: document.getElementById('fav-count-badge'),
+      favCountBadgeStatic: document.getElementById('fav-count-badge-static'),
+      bottomNavWrapper: document.querySelector('.bottom-nav-wrapper'),
       toast: document.getElementById('toast-notice'),
       toastIcon: document.getElementById('toast-icon'),
       toastText: document.getElementById('toast-text'),
@@ -200,6 +202,9 @@ class JardimApp {
   }
 
   init() {
+    if (this.dom.bottomNavWrapper) {
+      this.dom.bottomNavWrapper.dataset.activeTab = this.currentTab || 'inicio';
+    }
     this.bindEvents();
     this.updateHeaderBadge();
     this.updateFavBadge();
@@ -254,14 +259,16 @@ class JardimApp {
 
   updateFavBadge() {
     const count = this.favorites.size;
-    if (this.dom.favCountBadge) {
-      if (count > 0) {
-        this.dom.favCountBadge.textContent = count;
-        this.dom.favCountBadge.style.display = 'inline-block';
-      } else {
-        this.dom.favCountBadge.style.display = 'none';
+    [this.dom.favCountBadge, this.dom.favCountBadgeStatic].forEach(badge => {
+      if (badge) {
+        if (count > 0) {
+          badge.textContent = count;
+          badge.style.display = 'inline-block';
+        } else {
+          badge.style.display = 'none';
+        }
       }
-    }
+    });
   }
 
   switchTab(tab) {
@@ -270,6 +277,11 @@ class JardimApp {
     this.activeItem = null;
     this.searchQuery = '';
     this.currentFilter = this.userLevel; // reseta filtro para o nível do usuário
+
+    // Atualiza estado ativo no wrapper para animar o entalhe e a bolinha
+    if (this.dom.bottomNavWrapper) {
+      this.dom.bottomNavWrapper.dataset.activeTab = tab;
+    }
 
     // Atualiza botões da barra inferior
     this.dom.tabBtns.forEach(btn => {

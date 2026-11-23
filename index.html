@@ -51,12 +51,25 @@
       <!-- Injetado via app.js -->
     </main>
 
-    <!-- Barra de Navegação Inferior Curvada com Botão Central Flutuante (Design Figma) -->
-    <nav class="bottom-nav-wrapper" role="navigation" aria-label="Navegação inferior principal">
+    <!-- Barra de Navegação Inferior Curvada com Bolinha Flutuante Deslizante Fluida -->
+    <nav class="bottom-nav-wrapper" data-active-tab="inicio" role="navigation" aria-label="Navegação inferior principal">
+      <!-- Fundo SVG Curvado Deslizante -->
       <div class="bottom-nav-bg-svg" aria-hidden="true">
-        <svg preserveAspectRatio="none" viewBox="0 0 478 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path class="nav-svg-path" d="M0 0H119.5H168.001C175.138 0 181.914 2.24039 186.536 6.12785L206.689 23.0798C225.603 38.9877 260.371 38.0034 277.466 21.0761L291.468 7.21093C296.041 2.68255 303.378 0 311.19 0H358.5H478V80H0V0Z" />
+        <svg preserveAspectRatio="none" viewBox="0 0 1434 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="nav-svg-path" d="M0 0 H645.406 C652.543 0 659.319 2.24039 663.941 6.12785 L684.094 23.0798 C703.008 38.9877 737.776 38.0034 754.871 21.0761 L768.873 7.21093 C773.446 2.68255 780.783 0 788.595 0 H1434 V80 H0 V0 Z" />
         </svg>
+      </div>
+
+      <!-- Bolinha Central Flutuante Deslizante -->
+      <div class="floating-bubble" aria-hidden="true">
+        <div class="fab-circle">
+          <div class="fab-icon-layer">
+            <i data-lucide="home" class="fab-morph-icon icon-inicio"></i>
+            <i data-lucide="bookmark" class="fab-morph-icon icon-meujardim"></i>
+            <i data-lucide="sliders-horizontal" class="fab-morph-icon icon-nivel"></i>
+          </div>
+          <span id="fav-count-badge" class="nav-badge-count" style="display: none;">0</span>
+        </div>
       </div>
 
       <div class="bottom-nav-content">
@@ -66,12 +79,12 @@
           <span class="tab-indicator"></span>
         </button>
 
-        <button class="nav-tab-btn nav-tab-fab" data-tab="meujardim" aria-selected="false" aria-label="Ir para Meu Jardim">
-          <div class="fab-circle">
-            <i data-lucide="bookmark" class="fab-icon"></i>
-            <span id="fav-count-badge" class="nav-badge-count" style="display: none;">0</span>
-          </div>
-          <span class="tab-label fab-label">Meu Jardim</span>
+        <button class="nav-tab-btn" data-tab="meujardim" aria-selected="false" aria-label="Ir para Meu Jardim">
+          <span class="tab-icon">
+            <i data-lucide="bookmark"></i>
+            <span id="fav-count-badge-static" class="nav-badge-count" style="display: none;">0</span>
+          </span>
+          <span class="tab-label">Meu Jardim</span>
           <span class="tab-indicator"></span>
         </button>
 

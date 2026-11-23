@@ -1190,7 +1190,7 @@ svg.lucide, [data-lucide] {
   margin-bottom: 6px;
 }
 
-/* Barra Inferior Curvada com Botão Central Flutuante (Design Figma) */
+/* Barra Inferior Curvada com Bolinha Flutuante Deslizante Fluida */
 .bottom-nav-wrapper {
   position: relative;
   flex-shrink: 0;
@@ -1198,6 +1198,7 @@ svg.lucide, [data-lucide] {
   height: var(--altura-bottom-bar);
   z-index: 50;
   filter: drop-shadow(0 -4px 16px rgba(0, 0, 0, 0.08));
+  overflow: visible;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1206,6 +1207,7 @@ svg.lucide, [data-lucide] {
   }
 }
 
+/* Fundo SVG Curvado com Entalhe Deslizante */
 .bottom-nav-bg-svg {
   position: absolute;
   inset: 0;
@@ -1213,12 +1215,32 @@ svg.lucide, [data-lucide] {
   height: 100%;
   pointer-events: none;
   z-index: 1;
+  overflow: hidden;
 }
 
 .bottom-nav-bg-svg svg {
-  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 300%;
   height: 100%;
   display: block;
+  transform: translateX(-50%);
+  transition: transform 0.42s cubic-bezier(0.34, 1.25, 0.64, 1);
+  will-change: transform;
+}
+
+/* Deslocamentos do Entalhe SVG para cada aba */
+.bottom-nav-wrapper[data-active-tab="inicio"] .bottom-nav-bg-svg svg {
+  transform: translateX(calc(-50% + 11.1111%));
+}
+
+.bottom-nav-wrapper[data-active-tab="meujardim"] .bottom-nav-bg-svg svg {
+  transform: translateX(-50%);
+}
+
+.bottom-nav-wrapper[data-active-tab="nivel"] .bottom-nav-bg-svg svg {
+  transform: translateX(calc(-50% - 11.1111%));
 }
 
 .nav-svg-path {
@@ -1232,6 +1254,86 @@ svg.lucide, [data-lucide] {
   }
 }
 
+/* Bolinha Central Flutuante Deslizante (FAB) */
+.floating-bubble {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 33.3333%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  transition: transform 0.42s cubic-bezier(0.34, 1.25, 0.64, 1);
+  will-change: transform;
+}
+
+/* Posições da Bolinha */
+.bottom-nav-wrapper[data-active-tab="inicio"] .floating-bubble {
+  transform: translateX(0%);
+}
+
+.bottom-nav-wrapper[data-active-tab="meujardim"] .floating-bubble {
+  transform: translateX(100%);
+}
+
+.bottom-nav-wrapper[data-active-tab="nivel"] .floating-bubble {
+  transform: translateX(200%);
+}
+
+.floating-bubble .fab-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--verde-floresta-700), var(--verde-floresta-800));
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(45, 106, 79, 0.4), 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transform: translateY(-16px);
+  transition: box-shadow 0.25s ease, background 0.25s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .floating-bubble .fab-circle {
+    background: linear-gradient(135deg, rgb(64, 145, 108) 0%, rgb(27, 67, 50) 100%);
+    box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.5), 0px 0px 14px 0px rgba(82, 183, 136, 0.25);
+  }
+}
+
+/* Camada de Ícones com Morfismo Fluido na Bolinha */
+.fab-icon-layer {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fab-morph-icon {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.3px;
+  stroke: #ffffff;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.bottom-nav-wrapper[data-active-tab="inicio"] .fab-morph-icon.icon-inicio,
+.bottom-nav-wrapper[data-active-tab="meujardim"] .fab-morph-icon.icon-meujardim,
+.bottom-nav-wrapper[data-active-tab="nivel"] .fab-morph-icon.icon-nivel {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Conteúdo dos Botões de Navegação */
 .bottom-nav-content {
   position: relative;
   z-index: 2;
@@ -1240,7 +1342,7 @@ svg.lucide, [data-lucide] {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 0 16px 12px 16px;
+  padding: 0 0 10px 0;
 }
 
 .nav-tab-btn {
@@ -1257,16 +1359,18 @@ svg.lucide, [data-lucide] {
   font-weight: 600;
   cursor: pointer;
   position: relative;
-  padding-bottom: 6px;
+  padding-bottom: 4px;
   height: 100%;
   transition: color 0.18s ease;
 }
 
+/* Ícones estáticos das abas */
 .nav-tab-btn .tab-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  transition: opacity 0.22s ease, transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
 .nav-tab-btn .tab-icon svg,
@@ -1276,8 +1380,15 @@ svg.lucide, [data-lucide] {
   stroke-width: 2.2px;
 }
 
-.nav-tab-btn:hover .tab-icon {
-  transform: translateY(-2px);
+/* Quando a aba está ativa, seu ícone estático suaviza pois a bolinha flutua sobre ela */
+.nav-tab-btn.active .tab-icon {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.5);
+}
+
+.nav-tab-btn:not(.active) .tab-icon {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .nav-tab-btn.active {
@@ -1289,6 +1400,13 @@ svg.lucide, [data-lucide] {
   .nav-tab-btn.active {
     color: var(--verde-folha-400);
   }
+}
+
+.nav-tab-btn .tab-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.18s ease;
 }
 
 /* Indicador de Aba Ativa (Pílula Verde abaixo do texto conforme Figma) */
@@ -1315,77 +1433,8 @@ svg.lucide, [data-lucide] {
   }
 }
 
-/* Botão Central Flutuante (FAB - Meu Jardim) */
-.nav-tab-btn.nav-tab-fab {
-  flex: 1.15;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 6px;
-  transform: translateY(-16px);
-}
-
-.fab-circle {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--verde-floresta-700), var(--verde-floresta-800));
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 18px rgba(45, 106, 79, 0.4), 0 2px 6px rgba(0, 0, 0, 0.1);
-  position: relative;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background 0.25s ease;
-  margin-bottom: 3px;
-}
-
-@media (prefers-color-scheme: dark) {
-  .fab-circle {
-    background: linear-gradient(135deg, rgb(64, 145, 108) 0%, rgb(27, 67, 50) 100%);
-    box-shadow: 0px 6px 20px 0px rgba(0, 0, 0, 0.5), 0px 0px 14px 0px rgba(82, 183, 136, 0.25);
-  }
-}
-
-.fab-circle .fab-icon {
-  width: 22px;
-  height: 22px;
-  stroke-width: 2.3px;
-}
-
-.nav-tab-btn.nav-tab-fab:hover .fab-circle {
-  transform: scale(1.08) translateY(-2px);
-  box-shadow: 0 8px 24px rgba(45, 106, 79, 0.5);
-}
-
-.nav-tab-btn.nav-tab-fab.active .fab-circle {
-  background: linear-gradient(135deg, rgb(82, 183, 136) 0%, rgb(45, 106, 79) 100%);
-  box-shadow: 0 6px 22px rgba(82, 183, 136, 0.55), 0 0 16px rgba(82, 183, 136, 0.35);
-  transform: scale(1.05);
-}
-
-.nav-tab-btn.nav-tab-fab .tab-label {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--texto-mutado);
-  white-space: nowrap;
-  transition: color 0.18s ease;
-}
-
-.nav-tab-btn.nav-tab-fab.active .tab-label {
-  color: var(--verde-floresta-700);
-  font-weight: 700;
-}
-
-@media (prefers-color-scheme: dark) {
-  .nav-tab-btn.nav-tab-fab.active .tab-label {
-    color: var(--verde-folha-400);
-  }
-}
-
-/* Contador de Favoritos no FAB */
-.nav-tab-btn.nav-tab-fab .nav-badge-count {
+/* Contador de Favoritos */
+.nav-badge-count {
   position: absolute;
   top: -2px;
   right: -2px;
@@ -1404,9 +1453,14 @@ svg.lucide, [data-lucide] {
 }
 
 @media (prefers-color-scheme: dark) {
-  .nav-tab-btn.nav-tab-fab .nav-badge-count {
+  .nav-badge-count {
     border-color: #15241d;
   }
+}
+
+.nav-tab-btn .tab-icon .nav-badge-count {
+  top: -4px;
+  right: -8px;
 }
 
 /* Toast de Notificação */
