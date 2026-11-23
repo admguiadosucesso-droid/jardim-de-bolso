@@ -208,10 +208,17 @@ class JardimApp {
   }
 
   getDicaDoDia() {
-    const dia = new Date().getDate();
+    const hoje = new Date();
+    const dia = hoje.getDate();
+    const meses = [
+      'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ];
+    const dataFormatada = `Hoje · ${dia} de ${meses[hoje.getMonth()]}`;
     const index = (dia - 1) % DICAS_DO_DIA.length;
     return {
       dia: dia,
+      dataFormatada: dataFormatada,
       texto: DICAS_DO_DIA[index]
     };
   }
@@ -274,7 +281,7 @@ class JardimApp {
           <span class="tip-label">
             <i data-lucide="sparkles" class="icon-inline"></i> Dica do Dia
           </span>
-          <span class="tip-date">Dia ${dica.dia}</span>
+          <span class="tip-date">${dica.dataFormatada}</span>
         </div>
         <p class="tip-content">${dica.texto}</p>
       </article>
@@ -283,7 +290,7 @@ class JardimApp {
       <section>
         <div class="section-title">
           <span>Explorar Módulos</span>
-          <span style="font-size: 0.8rem; font-weight: 500; color: var(--texto-secundario);">23 itens de exemplo</span>
+          <span style="font-size: 0.8rem; font-weight: 500; color: var(--texto-secundario);">60 itens catalogados</span>
         </div>
         <div class="modules-grid">
           ${MODULOS.map(mod => `
@@ -352,11 +359,32 @@ class JardimApp {
   // ==========================================
   renderBusca() {
     const q = this.searchQuery.toLowerCase().trim();
-    const resultados = ITENS.filter(item => 
-      item.nome.toLowerCase().includes(q) ||
-      item.resumo.toLowerCase().includes(q) ||
-      item.descricao.toLowerCase().includes(q)
-    );
+    const tokens = q.split(/\s+/).filter(Boolean);
+
+    // 1. Busca prioritária exata pelo nome do item
+    // Se o usuário busca "tesoura", só itens que REALMENTE são tesouras aparecem!
+    const correspondenciasNome = ITENS.filter(item => {
+      const nome = item.nome.toLowerCase();
+      return tokens.every(token => nome.includes(token));
+    });
+
+    let resultados = correspondenciasNome;
+
+    // Se NÃO houver nenhuma correspondência no nome, busca nas tags específicas do item
+    if (resultados.length === 0) {
+      resultados = ITENS.filter(item => {
+        const tags = (item.tags || []).map(t => t.toLowerCase()).join(' ');
+        return tokens.every(token => tags.includes(token));
+      });
+    }
+
+    // Se ainda não houver nenhum resultado, busca no início do resumo
+    if (resultados.length === 0) {
+      resultados = ITENS.filter(item => {
+        const resumo = item.resumo.toLowerCase();
+        return tokens.every(token => resumo.includes(token));
+      });
+    }
 
     this.dom.content.innerHTML = `
       <section class="search-container">
@@ -544,6 +572,11 @@ class JardimApp {
       </div>
 
       <div class="detail-view">
+        <!-- Banner Fotográfico em Alta Resolução -->
+        <div class="detail-hero-banner">
+          <img src="${item.imagem}" alt="${item.nome}" class="detail-hero-img" loading="eager" onerror="this.src='icon.svg'" />
+        </div>
+
         <!-- Cabeçalho do Detalhe -->
         <article class="detail-header-card">
           <div class="detail-top-meta">
@@ -565,17 +598,29 @@ class JardimApp {
           </button>
         </article>
 
-        <!-- Espaço de Vídeo 16:9 (para Ferramentas e Serviços) -->
-        ${item.temVideo ? `
+        <!-- Espaço de Vídeo 16:9 com Embed Real do YouTube -->
+        ${item.temVideo && item.youtubeId ? `
           <section>
-            <div id="video-preview-box" class="video-placeholder-container" title="Assistir demonstração">
-              <div class="video-play-btn">
-                <i data-lucide="play" style="fill: currentColor; width: 22px; height: 22px; margin-left: 3px;"></i>
-              </div>
-              <span class="video-tag">
-                <i data-lucide="video" class="icon-inline"></i> Vídeo Demonstrativo (16:9)
+            <div id="video-preview-box" class="video-placeholder-container" style="padding:0; overflow:hidden;" title="Assistir aula no YouTube">
+              <iframe 
+                width="100%" 
+                height="100%" 
+                src="https://www.youtube-nocookie.com/embed/${item.youtubeId}" 
+                title="${item.nome}" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+                loading="lazy"
+                style="width: 100%; height: 100%; aspect-ratio: 16/9; border: none; display: block;"
+              ></iframe>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; padding: 0 4px;">
+              <span style="font-size: 0.78rem; color: var(--texto-secundario); display: flex; align-items: center; gap: 4px;">
+                <i data-lucide="video" style="width: 13px; height: 13px;"></i> ${item.videoTitulo || 'Vídeo Explicativo'}
               </span>
-              <p class="video-note">${item.videoPlaceholder || 'Demonstração prática e dicas de execução com especialista.'}</p>
+              <a href="https://www.youtube.com/watch?v=${item.youtubeId}" target="_blank" rel="noopener noreferrer" style="font-size: 0.78rem; font-weight: 600; color: var(--verde-floresta-700); text-decoration: underline; display: flex; align-items: center; gap: 3px;">
+                Abrir no YouTube <i data-lucide="external-link" style="width: 12px; height: 12px;"></i>
+              </a>
             </div>
           </section>
         ` : ''}
@@ -752,8 +797,9 @@ class JardimApp {
           com favoritos e nível salvos diretamente no seu dispositivo.
         </p>
         <p style="margin-top: 8px;">
-          • Total: 23 itens de referência cadastrados.<br>
+          • Total: 60 itens completos (15 por categoria) cadastrados.<br>
           • 4 módulos essenciais: Ferramentas, Plantas, Adubação e Serviços.<br>
+          • Fotos reais em alta definição e vídeos integrados do YouTube.<br>
           • 100% responsivo para celulares e desktops.
         </p>
       </article>
@@ -779,28 +825,33 @@ class JardimApp {
 
     return `
       <article class="item-card" data-item-id="${item.id}" role="button" tabindex="0" aria-label="${item.nome}">
-        <div class="item-card-header">
-          <div>
-            <h4 class="item-card-title">${item.nome}</h4>
-            <span style="font-size: 0.72rem; color: var(--texto-mutado); display: flex; align-items: center; gap: 4px; margin-top: 2px;">
-              <i data-lucide="${moduloObj?.icone || 'sprout'}" style="width: 12px; height: 12px;"></i> ${moduloObj?.nome || ''}
+        <div class="item-card-media">
+          <img src="${item.imagem}" alt="${item.nome}" class="item-card-img" loading="lazy" onerror="this.src='icon.svg'" />
+        </div>
+        <div class="item-card-body">
+          <div class="item-card-header">
+            <div>
+              <h4 class="item-card-title">${item.nome}</h4>
+              <span style="font-size: 0.72rem; color: var(--texto-mutado); display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                <i data-lucide="${moduloObj?.icone || 'sprout'}" style="width: 12px; height: 12px;"></i> ${moduloObj?.nome || ''}
+              </span>
+            </div>
+            <span class="badge-nivel ${nivelObj.slug}">
+              <i data-lucide="${nivelObj.icone}" class="badge-icon"></i> Nível ${nivelObj.nome}
             </span>
           </div>
-          <span class="badge-nivel ${nivelObj.slug}">
-            <i data-lucide="${nivelObj.icone}" class="badge-icon"></i> Nível ${nivelObj.nome}
-          </span>
-        </div>
 
-        <p class="item-card-desc">${item.resumo}</p>
+          <p class="item-card-desc">${item.resumo}</p>
 
-        <div class="item-card-footer">
-          <span style="display: flex; align-items: center; gap: 5px;">
-            <i data-lucide="${item.temVideo ? 'video' : 'file-text'}" style="width: 14px; height: 14px;"></i>
-            ${item.temVideo ? 'Vídeo disponível' : 'Ficha completa'}
-          </span>
-          <span style="display: flex; align-items: center; gap: 4px; font-weight: 600;">
-            ${isSaved ? '<i data-lucide="bookmark-check" style="width:14px; height:14px; color:var(--ambar-500);"></i> Salvo' : 'Ver detalhes <i data-lucide="chevron-right" style="width:14px; height:14px;"></i>'}
-          </span>
+          <div class="item-card-footer">
+            <span style="display: flex; align-items: center; gap: 5px;">
+              <i data-lucide="${item.temVideo ? 'video' : 'file-text'}" style="width: 14px; height: 14px;"></i>
+              ${item.temVideo ? 'Vídeo disponível' : 'Ficha completa'}
+            </span>
+            <span style="display: flex; align-items: center; gap: 4px; font-weight: 600;">
+              ${isSaved ? '<i data-lucide="bookmark-check" style="width:14px; height:14px; color:var(--ambar-500);"></i> Salvo' : 'Ver detalhes <i data-lucide="chevron-right" style="width:14px; height:14px;"></i>'}
+            </span>
+          </div>
         </div>
       </article>
     `;
