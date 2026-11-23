@@ -57,7 +57,7 @@
   --raio-card: 18px;
   --raio-botao: 12px;
   --raio-pill: 9999px;
-  --altura-bottom-bar: 64px;
+  --altura-bottom-bar: 80px;
 }
 
 /* Suporte a Tema Escuro */
@@ -1190,33 +1190,61 @@ svg.lucide, [data-lucide] {
   margin-bottom: 6px;
 }
 
-/* Barra Inferior Fixa (Bottom Navigation) */
-.bottom-nav {
+/* Barra Inferior Curvada com Botão Central Flutuante (Design Figma) */
+.bottom-nav-wrapper {
   position: relative;
   flex-shrink: 0;
-  bottom: 0;
   width: 100%;
   height: var(--altura-bottom-bar);
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid var(--borda-suave);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
   z-index: 50;
+  filter: drop-shadow(0 -4px 16px rgba(0, 0, 0, 0.08));
 }
 
 @media (prefers-color-scheme: dark) {
-  .bottom-nav {
-    background-color: rgba(21, 36, 29, 0.95);
-    border-top-color: var(--borda-suave);
+  .bottom-nav-wrapper {
+    filter: drop-shadow(0 -4px 20px rgba(0, 0, 0, 0.45));
   }
+}
+
+.bottom-nav-bg-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bottom-nav-bg-svg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.nav-svg-path {
+  fill: #ffffff;
+  transition: fill 0.25s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .nav-svg-path {
+    fill: #15241d;
+  }
+}
+
+.bottom-nav-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 16px 12px 16px;
 }
 
 .nav-tab-btn {
   flex: 1;
-  height: 100%;
   background: none;
   border: none;
   display: flex;
@@ -1229,19 +1257,21 @@ svg.lucide, [data-lucide] {
   font-weight: 600;
   cursor: pointer;
   position: relative;
-  transition: color 0.15s ease;
+  padding-bottom: 4px;
+  transition: color 0.18s ease;
 }
 
 .nav-tab-btn .tab-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.15s ease;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.nav-tab-btn .tab-icon svg {
-  width: 20px;
-  height: 20px;
+.nav-tab-btn .tab-icon svg,
+.nav-tab-btn .tab-icon [data-lucide] {
+  width: 22px;
+  height: 22px;
   stroke-width: 2.2px;
 }
 
@@ -1260,34 +1290,114 @@ svg.lucide, [data-lucide] {
   }
 }
 
-.nav-tab-btn.active::after {
+.nav-tab-btn:not(.nav-tab-fab).active::after {
   content: "";
   position: absolute;
-  top: 0;
-  width: 32px;
+  bottom: 0px;
+  width: 20px;
   height: 3px;
   background-color: var(--verde-floresta-700);
   border-radius: var(--raio-pill);
 }
 
 @media (prefers-color-scheme: dark) {
-  .nav-tab-btn.active::after {
+  .nav-tab-btn:not(.nav-tab-fab).active::after {
     background-color: var(--verde-folha-400);
   }
 }
 
-.nav-badge-count {
+/* Botão Central Flutuante (FAB - Meu Jardim) */
+.nav-tab-btn.nav-tab-fab {
+  flex: 1.15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 2px;
+  transform: translateY(-12px);
+}
+
+.fab-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--verde-floresta-700), var(--verde-floresta-800));
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(45, 106, 79, 0.4), 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background 0.25s ease;
+  margin-bottom: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .fab-circle {
+    background: linear-gradient(135deg, var(--verde-floresta-600), var(--verde-floresta-800));
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 14px rgba(82, 183, 136, 0.25);
+  }
+}
+
+.fab-circle .fab-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.3px;
+}
+
+.nav-tab-btn.nav-tab-fab:hover .fab-circle {
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 8px 24px rgba(45, 106, 79, 0.5);
+}
+
+.nav-tab-btn.nav-tab-fab.active .fab-circle {
+  background: linear-gradient(135deg, var(--verde-folha-600), var(--verde-floresta-700));
+  box-shadow: 0 6px 20px rgba(82, 183, 136, 0.5), 0 0 0 3px rgba(82, 183, 136, 0.35);
+  transform: scale(1.05);
+}
+
+.nav-tab-btn.nav-tab-fab .tab-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--texto-mutado);
+  white-space: nowrap;
+  transition: color 0.18s ease;
+}
+
+.nav-tab-btn.nav-tab-fab.active .tab-label {
+  color: var(--verde-floresta-700);
+  font-weight: 700;
+}
+
+@media (prefers-color-scheme: dark) {
+  .nav-tab-btn.nav-tab-fab.active .tab-label {
+    color: var(--verde-folha-400);
+  }
+}
+
+/* Contador de Favoritos no FAB */
+.nav-tab-btn.nav-tab-fab .nav-badge-count {
   position: absolute;
-  top: 8px;
-  right: calc(50% - 18px);
+  top: -2px;
+  right: -2px;
   background-color: var(--ambar-500);
   color: #ffffff;
   font-size: 0.65rem;
   font-weight: 800;
-  padding: 1px 5px;
+  padding: 1px 6px;
   border-radius: var(--raio-pill);
-  min-width: 16px;
+  min-width: 18px;
+  height: 18px;
+  line-height: 16px;
   text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  border: 2px solid #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .nav-tab-btn.nav-tab-fab .nav-badge-count {
+    border-color: #15241d;
+  }
 }
 
 /* Toast de Notificação */
