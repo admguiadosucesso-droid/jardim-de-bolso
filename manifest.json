@@ -1,0 +1,19 @@
+{
+  "name": "Jardim de Bolso",
+  "short_name": "Jardim",
+  "description": "Guia Prático de Jardinagem e Paisagismo em formato de aplicativo móvel.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1b4332",
+  "theme_color": "#1b4332",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
