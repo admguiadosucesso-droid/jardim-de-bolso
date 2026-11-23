@@ -1325,8 +1325,8 @@ svg.lucide, [data-lucide] {
   stroke-width: 2.3px;
   stroke: #ffffff;
   opacity: 0;
-  transform: scale(0.6);
-  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.4, 0.64, 1);
+  transform: scale(0.65);
+  transition: opacity 0.22s ease 0.12s, transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1) 0.12s;
 }
 
 .bottom-nav-wrapper[data-active-tab="inicio"] .fab-morph-icon.icon-inicio,
@@ -1384,14 +1384,20 @@ svg.lucide, [data-lucide] {
   transition: color 0.18s ease;
 }
 
-/* Ícones estáticos das abas */
+/* Ícones estáticos das abas com animação fluida de subida/descida */
 .nav-tab-btn .tab-icon {
   position: absolute;
   top: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.22s ease, transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.25s ease 0.08s,
+              visibility 0.38s;
+  will-change: transform, opacity;
 }
 
 .nav-tab-btn .tab-icon svg,
@@ -1401,17 +1407,25 @@ svg.lucide, [data-lucide] {
   stroke-width: 2.2px;
 }
 
-/* Quando a aba está ativa, seu ícone estático é totalmente ocultado para não vazar atrás da bolinha */
+/* Quando a aba é selecionada, o ícone sobe reto até a altura do círculo e some com elegância */
 .nav-tab-btn.active .tab-icon {
+  transform: translateY(-28px) scale(0.95);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  transition: transform 0.36s cubic-bezier(0.25, 1, 0.5, 1),
+              opacity 0.2s ease 0.14s,
+              visibility 0.36s;
 }
 
+/* Quando a aba deixa de ser ativa, o ícone desce suavemente e se assenta na base */
 .nav-tab-btn:not(.active) .tab-icon {
+  transform: translateY(0) scale(1);
   opacity: 1;
   visibility: visible;
-  transform: translateY(0) scale(1);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.05s,
+              opacity 0.28s ease 0.08s,
+              visibility 0.4s;
 }
 
 .nav-tab-btn.active {
