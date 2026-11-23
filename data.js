@@ -1,13 +1,12 @@
 // Jardim de Bolso - Banco de Dados do MVP v0.1
 // 23 Itens completos distribuídos em 4 módulos e 3 níveis de experiência
-// + 31 Dicas do dia (uma para cada dia do mês)
+// Ícones Premium via Lucide
 
 export const MODULOS = [
   {
     id: 'ferramentas',
     nome: 'Ferramentas',
     icone: 'wrench',
-    emoji: '🛠️',
     total: 6,
     descricao: 'Equipamentos essenciais, cuidados, afiação e técnicas de manuseio seguro.'
   },
@@ -15,15 +14,13 @@ export const MODULOS = [
     id: 'plantas',
     nome: 'Plantas',
     icone: 'leaf',
-    emoji: '🪴',
     total: 6,
     descricao: 'Guia de cultivo com iluminação, rega, dimensões e particularidades de cada espécie.'
   },
   {
     id: 'adubacao',
     nome: 'Adubação',
-    icone: 'sparkles',
-    emoji: '🧪',
+    icone: 'flask-conical',
     total: 5,
     descricao: 'Nutrientes, fertilizantes orgânicos e químicos, dosagens e épocas de aplicação.'
   },
@@ -31,16 +28,15 @@ export const MODULOS = [
     id: 'servicos',
     nome: 'Serviços',
     icone: 'clipboard-list',
-    emoji: '📋',
     total: 6,
     descricao: 'Passo a passo detalhado para reformas, plantios, podas e projetos de jardinagem.'
   }
 ];
 
 export const NIVEIS = {
-  1: { id: 1, slug: 'iniciante', nome: 'Iniciante', badge: 'Iniciante', cor: 'verde' },
-  2: { id: 2, slug: 'avancado', nome: 'Avançado', badge: 'Avançado', cor: 'azul' },
-  3: { id: 3, slug: 'pro', nome: 'Pro', badge: 'Pro', cor: 'ouro' }
+  1: { id: 1, slug: 'iniciante', nome: 'Iniciante', badge: 'Iniciante', cor: 'verde', icone: 'seedling' },
+  2: { id: 2, slug: 'avancado', nome: 'Avançado', badge: 'Avançado', cor: 'azul', icone: 'sprout' },
+  3: { id: 3, slug: 'pro', nome: 'Pro', badge: 'Pro', cor: 'ouro', icone: 'tree-pine' }
 };
 
 export const DICAS_DO_DIA = [
@@ -86,6 +82,7 @@ export const ITENS = [
     modulo: 'ferramentas',
     nome: 'Tesoura de poda',
     nivel: 1,
+    icone: 'scissors',
     resumo: 'Cortes limpos em ramos finos, desbaste e colheita sem mastigar os caules.',
     descricao: 'A ferramenta mais indispensável do jardineiro. Possui lâmina curva tipo bypass que funciona como uma tesoura comum, proporcionando cortes precisos e lisos que cicatrizam rapidamente sem estressar a planta.',
     temVideo: true,
@@ -102,6 +99,7 @@ export const ITENS = [
     modulo: 'ferramentas',
     nome: 'Pá de jardinagem',
     nivel: 1,
+    icone: 'shovel',
     resumo: 'Abertura de covas, transplante de mudas e mistura uniforme de substratos.',
     descricao: 'Pá de mão estreita e ergonômica, fabricada em aço ou alumínio de alta resistência. Essencial tanto para trabalhos delicados em vasos quanto para preparar pequenos canteiros de flores e ervas.',
     temVideo: true,
@@ -118,6 +116,7 @@ export const ITENS = [
     modulo: 'ferramentas',
     nome: 'Regador de bico fino',
     nivel: 1,
+    icone: 'droplets',
     resumo: 'Irrigação milimétrica direto na raiz sem respingar terra nas folhas.',
     descricao: 'Projetado especialmente para jardinagem residencial e plantas de interior. O bico longo e estreito permite direcionar a água exatamente onde é necessária, evitando que gotas fiquem retidas nas folhas ou flores.',
     temVideo: true,
@@ -134,6 +133,7 @@ export const ITENS = [
     modulo: 'ferramentas',
     nome: 'Rastelo de jardim',
     nivel: 2,
+    icone: 'grid-2x2',
     resumo: 'Nivelamento de canteiros, descompactação da camada superficial e limpeza.',
     descricao: 'Ferramenta com dentes de aço curvados para trabalhar a superfície da terra. Permite recolher folhas secas, incorporar adubos orgânicos na camada superficial e preparar a cama de sementeira perfeitamente plana.',
     temVideo: true,
@@ -150,6 +150,7 @@ export const ITENS = [
     modulo: 'ferramentas',
     nome: 'Tesoura de cerca viva',
     nivel: 2,
+    icone: 'sparkle',
     resumo: 'Poda de nivelamento, alinhamento de sebes e acabamento topiário.',
     descricao: 'Tesoura de duas mãos com lâminas compridas retas ou serrilhadas. Desenvolvida para cortar múltiplos raminhos ao mesmo tempo, permitindo desenhar formas geométricas e manter cercas vivas e arbustos impecáveis.',
     temVideo: true,
@@ -166,6 +167,7 @@ export const ITENS = [
     modulo: 'ferramentas',
     nome: 'Serra de poda articulada',
     nivel: 3,
+    icone: 'hammer',
     resumo: 'Corte ágil de galhos grossos com dentes travados para madeira verde.',
     descricao: 'Projetada para arboricultura e paisagismo profissional. Os dentes afiados em corte japonês (cortam ao puxar) evitam que a serra trave na madeira verde e realizam cortes limpos em galhos onde a tesoura não alcança.',
     temVideo: true,
@@ -186,6 +188,7 @@ export const ITENS = [
     modulo: 'plantas',
     nome: 'Samambaia Americana',
     nivel: 1,
+    icone: 'feather',
     resumo: 'Folhagem verde exuberante e pendente, ideal para varandas e interiores claros.',
     descricao: 'Uma das espécies mais clássicas e queridas no paisagismo brasileiro. Cria cascatas de folhas frondosas e tem excelente capacidade de purificar o ar e aumentar a umidade de ambientes residenciais.',
     temVideo: false,
@@ -202,6 +205,7 @@ export const ITENS = [
     modulo: 'plantas',
     nome: 'Suculenta Echeveria',
     nivel: 1,
+    icone: 'flower-2',
     resumo: 'Formato escultural de rosa de pedra, fácil manutenção e baixa exigência de água.',
     descricao: 'Planta de folhas carnosas que armazenam água em formato de roseta simétrica. Perfeita para quem tem pouco tempo mas quer beleza botânica em janelas ensolaradas ou varandas.',
     temVideo: false,
@@ -218,6 +222,7 @@ export const ITENS = [
     modulo: 'plantas',
     nome: 'Costela-de-adão (Monstera)',
     nivel: 1,
+    icone: 'leaf',
     resumo: 'Folhas gigantes com recortes ornamentais, ícone do design biofílico.',
     descricao: 'Planta escultural de origem tropical de beleza inconfundível. Suas folhas largas possuem fenestras (fendas naturais) adaptadas para suportar ventos e permitir a passagem de luz na mata densa.',
     temVideo: false,
@@ -234,6 +239,7 @@ export const ITENS = [
     modulo: 'plantas',
     nome: 'Lavanda Francesa',
     nivel: 2,
+    icone: 'sparkles',
     resumo: 'Aroma relaxante inconfundível, flores lilases e atrativo de polinizadores.',
     descricao: 'Arbusto perene de origem mediterrânea com folhagem prateada e espigas florais perfumadas. Exige drenagem impecável e bastante sol direto para florescer com intensidade.',
     temVideo: false,
@@ -250,6 +256,7 @@ export const ITENS = [
     modulo: 'plantas',
     nome: 'Hibisco Tropical',
     nivel: 2,
+    icone: 'sun',
     resumo: 'Flores grandes e vibrantes que atraem beija-flores durante quase todo o ano.',
     descricao: 'Arbusto florífero vigoroso tradicional nos trópicos. Suas flores vistosas em tons de vermelho, rosa, laranja e amarelo abrem pela manhã e fecham ao entardecer, renovando-se continuamente.',
     temVideo: false,
@@ -266,6 +273,7 @@ export const ITENS = [
     modulo: 'plantas',
     nome: 'Agapanto (Lírio-do-nilo)',
     nivel: 2,
+    icone: 'flower',
     resumo: 'Hastes com buquês esféricos de flores azuis ou brancas de grande elegância.',
     descricao: 'Planta herbácea rizomatosa muito resistente e duradoura. Suas folhas em fita verde-escura formam touceiras densas que explodem em inflorescências espetaculares na primavera e no verão.',
     temVideo: false,
@@ -286,6 +294,7 @@ export const ITENS = [
     modulo: 'adubacao',
     nome: 'Húmus de minhoca',
     nivel: 1,
+    icone: 'layers',
     resumo: 'Condicionador biológico 100% orgânico, melhora a aeração e fertilidade do solo.',
     descricao: 'Subproduto nobre da digestão das minhocas, rico em microrganismos vivos, ácidos húmicos e fúlvicos. Atua como um condicionador suave que retém umidade, estrutura a terra e libera nutrientes de forma gradual.',
     temVideo: false,
@@ -301,6 +310,7 @@ export const ITENS = [
     modulo: 'adubacao',
     nome: 'Composto orgânico caseiro',
     nivel: 1,
+    icone: 'recycle',
     resumo: 'Reciclagem sustentável de resíduos de cozinha e folhas secas do jardim.',
     descricao: 'Resultado da decomposição biológica de restos de frutas, verduras, cascas de ovos, borra de café e folhagens secas. Alimenta a vida microbiana do solo e devolve micronutrientes preciosos para o ciclo botânico.',
     temVideo: false,
@@ -316,6 +326,7 @@ export const ITENS = [
     modulo: 'adubacao',
     nome: 'NPK 10-10-10 Mineral',
     nivel: 2,
+    icone: 'activity',
     resumo: 'Fórmula balanceada clássica para crescimento harmônico de folhas, caules e raízes.',
     descricao: 'Fertilizante inorgânico com proporções iguais de Nitrogênio (N), Fósforo (P) e Potássio (K). Fornece nutrição mineral de rápida assimilação para plantas estabelecidas que necessitam de reposição imediata.',
     temVideo: false,
@@ -331,6 +342,7 @@ export const ITENS = [
     modulo: 'adubacao',
     nome: 'Farinha de ossos autoclavada',
     nivel: 2,
+    icone: 'bone',
     resumo: 'Fonte orgânica nobre de fósforo e cálcio para raízes vigorosas e flores abundantes.',
     descricao: 'Adubo de origem natural rico em Fósforo (P) e Cálcio (Ca) de liberação lenta. Essencial para fixação de raízes novas no transplante e para estimular a formação vigorosa de flores e frutos.',
     temVideo: false,
@@ -346,6 +358,7 @@ export const ITENS = [
     modulo: 'adubacao',
     nome: 'Calcário dolomítico',
     nivel: 3,
+    icone: 'mountain',
     resumo: 'Correção de acidez (elevação do pH) e fornecimento equilibrado de Cálcio e Magnésio.',
     descricao: 'Corretivo agrícola essencial para solos brasileiros, tipicamente ácidos. Corrige o pH do solo, destravando os nutrientes que ficariam indisponíveis para as raízes, além de suprir Cálcio e Magnésio.',
     temVideo: false,
@@ -365,6 +378,7 @@ export const ITENS = [
     modulo: 'servicos',
     nome: 'Plantio de mudas em vasos',
     nivel: 1,
+    icone: 'package-plus',
     resumo: 'Procedimento correto para envasar mudas garantindo drenagem e desenvolvimento.',
     descricao: 'O transplante correto é a chave para o sucesso de qualquer planta. Seguir a sequência de camadas e cuidados previne apodrecimento radicular e o choque de transplante.',
     temVideo: true,
@@ -381,6 +395,7 @@ export const ITENS = [
     modulo: 'servicos',
     nome: 'Canteiro de flores e ervas',
     nivel: 1,
+    icone: 'layout-grid',
     resumo: 'Estruturação do solo, aeração e disposição estética de espécies florais.',
     descricao: 'Como transformar um pedaço de terra compactada em um canteiro farto e colorido, garantindo profundidade de raízes e retenção ideal de umidade.',
     temVideo: true,
@@ -397,6 +412,7 @@ export const ITENS = [
     modulo: 'servicos',
     nome: 'Poda de formação em arbustos',
     nivel: 2,
+    icone: 'git-branch',
     resumo: 'Condução da arquitetura da planta para copa densa, arejada e equilibrada.',
     descricao: 'A poda de formação orienta os ramos da planta desde jovem, estimulando brotações laterais simétricas e prevenindo galhos fracos ou cruzados no interior da copa.',
     temVideo: true,
@@ -413,6 +429,7 @@ export const ITENS = [
     modulo: 'servicos',
     nome: 'Implantação de gramado',
     nivel: 2,
+    icone: 'grid',
     resumo: 'Nivelamento do solo, adubação de base e assentamento de tapetes de grama.',
     descricao: 'Técnica profissional para formação de gramados uniformes, sem buracos ou desníveis, garantindo pegamento rápido das raízes nas primeiras duas semanas.',
     temVideo: true,
@@ -429,6 +446,7 @@ export const ITENS = [
     modulo: 'servicos',
     nome: 'Instalação de gotejamento automático',
     nivel: 3,
+    icone: 'cpu',
     resumo: 'Dimensionamento e montagem de sistema automatizado de altíssima eficiência hídrica.',
     descricao: 'Sistema hidráulico que entrega água gota a gota direto na zona de absorção radicular das plantas, economizando até 70% de água e eliminando a rotina manual de rega.',
     temVideo: true,
@@ -445,6 +463,7 @@ export const ITENS = [
     modulo: 'servicos',
     nome: 'Projeto paisagístico residencial',
     nivel: 3,
+    icone: 'compass',
     resumo: 'Metodologia de concepção espacial unindo estética botânica, circulação e insolação.',
     descricao: 'Do estudo preliminar à prancha executiva de implantação. Aprenda a analisar o microclima, definir pontos focais e compor espécies em harmonia com a arquitetura.',
     temVideo: true,

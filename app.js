@@ -1,4 +1,4 @@
-// Jardim de Bolso - Controlador do App (SPA)
+// Jardim de Bolso - Controlador do App (SPA) com Ícones Premium Lucide
 import { MODULOS, NIVEIS, DICAS_DO_DIA, ITENS } from './data.js';
 
 class JardimApp {
@@ -20,6 +20,7 @@ class JardimApp {
       userLevelHeaderText: document.getElementById('user-level-header-text'),
       favCountBadge: document.getElementById('fav-count-badge'),
       toast: document.getElementById('toast-notice'),
+      toastIcon: document.getElementById('toast-icon'),
       toastText: document.getElementById('toast-text'),
       modalOverlay: document.getElementById('modal-overlay'),
       modalTitle: document.getElementById('modal-title'),
@@ -104,6 +105,12 @@ class JardimApp {
     });
   }
 
+  refreshIcons() {
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
   updateHeaderBadge() {
     const nivelObj = NIVEIS[this.userLevel] || NIVEIS[1];
     if (this.dom.userLevelHeaderText) {
@@ -145,10 +152,12 @@ class JardimApp {
     this.render();
   }
 
-  showToast(message, icone = '✅') {
+  showToast(message, iconName = 'check-circle-2') {
     if (!this.dom.toast) return;
-    this.dom.toastText.textContent = `${icone} ${message}`;
+    this.dom.toastIcon.innerHTML = `<i data-lucide="${iconName}"></i>`;
+    this.dom.toastText.textContent = message;
     this.dom.toast.classList.add('visible');
+    this.refreshIcons();
 
     if (this.toastTimer) clearTimeout(this.toastTimer);
     this.toastTimer = setTimeout(() => {
@@ -162,6 +171,7 @@ class JardimApp {
     this.dom.modalBody.innerHTML = contentHtml;
     this.dom.modalOverlay.classList.add('open');
     this.dom.modalOverlay.setAttribute('aria-hidden', 'false');
+    this.refreshIcons();
   }
 
   closeModal() {
@@ -176,10 +186,10 @@ class JardimApp {
 
     if (this.favorites.has(itemId)) {
       this.favorites.delete(itemId);
-      this.showToast(`"${itemName}" removido do Meu Jardim`, '🗑️');
+      this.showToast(`"${itemName}" removido do Meu Jardim`, 'trash-2');
     } else {
       this.favorites.add(itemId);
-      this.showToast(`"${itemName}" salvo no Meu Jardim!`, '⭐');
+      this.showToast(`"${itemName}" salvo no Meu Jardim!`, 'bookmark-check');
     }
     this.saveFavorites();
 
@@ -190,15 +200,15 @@ class JardimApp {
         const isSaved = this.favorites.has(itemId);
         btn.className = `btn-save-jardim ${isSaved ? 'saved' : ''}`;
         btn.innerHTML = isSaved
-          ? `⭐ Salvo no Meu Jardim`
-          : `🤍 Salvar no Meu Jardim`;
+          ? `<i data-lucide="bookmark-check"></i> Salvo no Meu Jardim`
+          : `<i data-lucide="bookmark"></i> Salvar no Meu Jardim`;
+        this.refreshIcons();
       }
     }
   }
 
   getDicaDoDia() {
-    // Dica baseada no dia do mês (1 a 31)
-    const dia = new Date().getDate(); // 1 - 31
+    const dia = new Date().getDate();
     const index = (dia - 1) % DICAS_DO_DIA.length;
     return {
       dia: dia,
@@ -228,6 +238,8 @@ class JardimApp {
           break;
       }
     }
+
+    this.refreshIcons();
   }
 
   // ==========================================
@@ -240,7 +252,7 @@ class JardimApp {
       <!-- Caixa de Busca -->
       <section class="search-container" aria-label="Busca de itens">
         <div class="search-input-wrapper">
-          <span class="search-icon">🔍</span>
+          <i data-lucide="search" class="search-icon"></i>
           <input 
             type="search" 
             id="global-search-input" 
@@ -250,14 +262,18 @@ class JardimApp {
             autocomplete="off"
             aria-label="Buscar no Jardim de Bolso"
           />
-          <button id="search-clear-btn" class="search-clear-btn ${this.searchQuery ? 'visible' : ''}" title="Limpar busca">✕</button>
+          <button id="search-clear-btn" class="search-clear-btn ${this.searchQuery ? 'visible' : ''}" title="Limpar busca">
+            <i data-lucide="x"></i>
+          </button>
         </div>
       </section>
 
       <!-- Dica do Dia -->
       <article class="daily-tip-card">
         <div class="tip-header">
-          <span class="tip-label">💡 Dica do Dia</span>
+          <span class="tip-label">
+            <i data-lucide="sparkles" class="icon-inline"></i> Dica do Dia
+          </span>
           <span class="tip-date">Dia ${dica.dia}</span>
         </div>
         <p class="tip-content">${dica.texto}</p>
@@ -272,7 +288,9 @@ class JardimApp {
         <div class="modules-grid">
           ${MODULOS.map(mod => `
             <button class="module-card" data-module-id="${mod.id}" aria-label="Módulo ${mod.nome}">
-              <div class="module-icon-wrap">${mod.emoji}</div>
+              <div class="module-icon-wrap">
+                <i data-lucide="${mod.icone}"></i>
+              </div>
               <div class="module-info">
                 <h3>${mod.nome}</h3>
                 <span class="module-count">${mod.total} itens disponíveis</span>
@@ -286,7 +304,10 @@ class JardimApp {
       <section>
         <div class="section-title">
           <span>Recomendados para você</span>
-          <span class="badge-nivel ${NIVEIS[this.userLevel].slug}">Nível ${NIVEIS[this.userLevel].nome}</span>
+          <span class="badge-nivel ${NIVEIS[this.userLevel].slug}">
+            <i data-lucide="${NIVEIS[this.userLevel].icone}" class="badge-icon"></i>
+            Nível ${NIVEIS[this.userLevel].nome}
+          </span>
         </div>
         <div class="items-list">
           ${ITENS.filter(i => i.nivel === this.userLevel).slice(0, 3).map(item => this.renderItemCardHtml(item)).join('')}
@@ -340,7 +361,7 @@ class JardimApp {
     this.dom.content.innerHTML = `
       <section class="search-container">
         <div class="search-input-wrapper">
-          <span class="search-icon">🔍</span>
+          <i data-lucide="search" class="search-icon"></i>
           <input 
             type="search" 
             id="global-search-input" 
@@ -349,11 +370,15 @@ class JardimApp {
             value="${this.searchQuery}"
             autofocus
           />
-          <button id="search-clear-btn" class="search-clear-btn visible" title="Limpar busca">✕</button>
+          <button id="search-clear-btn" class="search-clear-btn visible" title="Limpar busca">
+            <i data-lucide="x"></i>
+          </button>
         </div>
         <div class="search-stats">
           <span>${resultados.length} resultado(s) encontrado(s)</span>
-          <button id="btn-cancel-search" style="background:none; border:none; color:var(--verde-floresta-700); cursor:pointer; font-weight:600; font-size:0.8rem;">Voltar ao início</button>
+          <button id="btn-cancel-search" style="background:none; border:none; color:var(--verde-floresta-700); cursor:pointer; font-weight:600; font-size:0.8rem; display:flex; align-items:center; gap:4px;">
+            <i data-lucide="arrow-left" style="width:14px; height:14px;"></i> Voltar ao início
+          </button>
         </div>
       </section>
 
@@ -362,9 +387,11 @@ class JardimApp {
           ? resultados.map(item => this.renderItemCardHtml(item)).join('')
           : `
             <div class="empty-state">
-              <div class="empty-icon">🍃</div>
+              <div class="empty-icon-wrap">
+                <i data-lucide="search-x" class="empty-icon-svg"></i>
+              </div>
               <h3 class="empty-title">Nenhum item encontrado</h3>
-              <p class="empty-desc">Não encontramos nada para "<strong>${this.searchQuery}</strong>". Tente buscar por termos mais genéricos como "tesoura", "samambaia" ou "adubo".</p>
+              <p class="empty-desc">Não encontramos nada para "<strong>${this.searchQuery}</strong>". Tente buscar por termos como "tesoura", "samambaia" ou "adubo".</p>
               <button id="btn-empty-clear" class="btn-primary-action">Limpar busca</button>
             </div>
           `}
@@ -378,7 +405,6 @@ class JardimApp {
 
     if (searchInput) {
       searchInput.focus();
-      // Coloca o cursor no final do texto
       searchInput.setSelectionRange(this.searchQuery.length, this.searchQuery.length);
       searchInput.addEventListener('input', (e) => {
         this.searchQuery = e.target.value;
@@ -408,7 +434,6 @@ class JardimApp {
   openModule(modId) {
     this.currentModule = modId;
     this.activeItem = null;
-    // Abre já filtrada pelo nível do perfil (conforme item 3 da especificação)
     this.currentFilter = this.userLevel;
     window.scrollTo({ top: 0, behavior: 'smooth' });
     this.render();
@@ -418,10 +443,7 @@ class JardimApp {
     const modulo = MODULOS.find(m => m.id === modId);
     if (!modulo) return this.renderInicio();
 
-    // Filtra itens do módulo
     const itensDoModulo = ITENS.filter(i => i.modulo === modId);
-
-    // Aplica filtro por nível
     const itensFiltrados = itensDoModulo.filter(item => {
       if (this.currentFilter === 'todos') return true;
       return item.nivel === Number(this.currentFilter);
@@ -429,9 +451,13 @@ class JardimApp {
 
     this.dom.content.innerHTML = `
       <div class="nav-back-bar">
-        <button id="btn-back-to-inicio" class="btn-back" title="Voltar ao Início" aria-label="Voltar">←</button>
+        <button id="btn-back-to-inicio" class="btn-back" title="Voltar ao Início" aria-label="Voltar">
+          <i data-lucide="arrow-left"></i>
+        </button>
         <div>
-          <h2 class="nav-back-title">${modulo.emoji} ${modulo.nome}</h2>
+          <h2 class="nav-back-title" style="display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="${modulo.icone}"></i> ${modulo.nome}
+          </h2>
           <p style="font-size: 0.78rem; color: var(--texto-secundario);">${modulo.descricao}</p>
         </div>
       </div>
@@ -439,10 +465,18 @@ class JardimApp {
       <!-- Barra de Chips de Filtro por Nível -->
       <section>
         <div class="filter-bar" role="tablist" aria-label="Filtro por nível">
-          <button class="filter-chip ${this.currentFilter === 'todos' ? 'active' : ''}" data-filter="todos">Todos (${itensDoModulo.length})</button>
-          <button class="filter-chip ${this.currentFilter === 1 ? 'active' : ''}" data-filter="1">Iniciante (${itensDoModulo.filter(i => i.nivel === 1).length})</button>
-          <button class="filter-chip ${this.currentFilter === 2 ? 'active' : ''}" data-filter="2">Avançado (${itensDoModulo.filter(i => i.nivel === 2).length})</button>
-          <button class="filter-chip ${this.currentFilter === 3 ? 'active' : ''}" data-filter="3">Pro (${itensDoModulo.filter(i => i.nivel === 3).length})</button>
+          <button class="filter-chip ${this.currentFilter === 'todos' ? 'active' : ''}" data-filter="todos">
+            Todos (${itensDoModulo.length})
+          </button>
+          <button class="filter-chip ${this.currentFilter === 1 ? 'active' : ''}" data-filter="1">
+            <i data-lucide="seedling" class="chip-icon"></i> Iniciante (${itensDoModulo.filter(i => i.nivel === 1).length})
+          </button>
+          <button class="filter-chip ${this.currentFilter === 2 ? 'active' : ''}" data-filter="2">
+            <i data-lucide="sprout" class="chip-icon"></i> Avançado (${itensDoModulo.filter(i => i.nivel === 2).length})
+          </button>
+          <button class="filter-chip ${this.currentFilter === 3 ? 'active' : ''}" data-filter="3">
+            <i data-lucide="tree-pine" class="chip-icon"></i> Pro (${itensDoModulo.filter(i => i.nivel === 3).length})
+          </button>
         </div>
       </section>
 
@@ -452,9 +486,11 @@ class JardimApp {
           ? itensFiltrados.map(item => this.renderItemCardHtml(item)).join('')
           : `
             <div class="empty-state" style="padding: 30px 10px;">
-              <div class="empty-icon">🌱</div>
+              <div class="empty-icon-wrap">
+                <i data-lucide="filter" class="empty-icon-svg"></i>
+              </div>
               <h3 class="empty-title">Nenhum item neste nível</h3>
-              <p class="empty-desc">Experimente selecionar "Todos" para ver todos os itens disponíveis neste módulo.</p>
+              <p class="empty-desc">Experimente selecionar "Todos" para ver todos os itens cadastrados neste módulo.</p>
               <button id="btn-filter-all" class="btn-primary-action" style="padding: 8px 16px;">Ver todos os itens</button>
             </div>
           `}
@@ -499,9 +535,11 @@ class JardimApp {
 
     this.dom.content.innerHTML = `
       <div class="nav-back-bar">
-        <button id="btn-back-detail" class="btn-back" title="Voltar" aria-label="Voltar">←</button>
-        <span style="font-size: 0.85rem; font-weight: 600; color: var(--texto-secundario);">
-          ${moduloObj ? moduloObj.nome : 'Voltar'}
+        <button id="btn-back-detail" class="btn-back" title="Voltar" aria-label="Voltar">
+          <i data-lucide="arrow-left"></i>
+        </button>
+        <span style="font-size: 0.85rem; font-weight: 600; color: var(--texto-secundario); display: flex; align-items: center; gap: 6px;">
+          <i data-lucide="${moduloObj?.icone || 'sprout'}"></i> ${moduloObj ? moduloObj.nome : 'Voltar'}
         </span>
       </div>
 
@@ -509,8 +547,12 @@ class JardimApp {
         <!-- Cabeçalho do Detalhe -->
         <article class="detail-header-card">
           <div class="detail-top-meta">
-            <span class="badge-nivel ${nivelObj.slug}">Nível ${nivelObj.nome}</span>
-            <span style="font-size: 0.8rem; font-weight: 500; color: var(--texto-mutado);">${moduloObj?.emoji || '🌿'} ${moduloObj?.nome || ''}</span>
+            <span class="badge-nivel ${nivelObj.slug}">
+              <i data-lucide="${nivelObj.icone}" class="badge-icon"></i> Nível ${nivelObj.nome}
+            </span>
+            <span style="font-size: 0.8rem; font-weight: 500; color: var(--texto-mutado); display: flex; align-items: center; gap: 5px;">
+              <i data-lucide="${moduloObj?.icone || 'sprout'}"></i> ${moduloObj?.nome || ''}
+            </span>
           </div>
 
           <h1 class="detail-title">${item.nome}</h1>
@@ -518,16 +560,21 @@ class JardimApp {
 
           <!-- Botão de Favoritar -->
           <button id="btn-fav-${item.id}" class="btn-save-jardim ${isSaved ? 'saved' : ''}">
-            ${isSaved ? '⭐ Salvo no Meu Jardim' : '🤍 Salvar no Meu Jardim'}
+            <i data-lucide="${isSaved ? 'bookmark-check' : 'bookmark'}"></i>
+            <span>${isSaved ? 'Salvo no Meu Jardim' : 'Salvar no Meu Jardim'}</span>
           </button>
         </article>
 
         <!-- Espaço de Vídeo 16:9 (para Ferramentas e Serviços) -->
         ${item.temVideo ? `
           <section>
-            <div id="video-preview-box" class="video-placeholder-container" title="Assistir vídeo demonstrativo">
-              <div class="video-play-btn">▶</div>
-              <span class="video-tag">Vídeo Demonstrativo (16:9)</span>
+            <div id="video-preview-box" class="video-placeholder-container" title="Assistir demonstração">
+              <div class="video-play-btn">
+                <i data-lucide="play" style="fill: currentColor; width: 22px; height: 22px; margin-left: 3px;"></i>
+              </div>
+              <span class="video-tag">
+                <i data-lucide="video" class="icon-inline"></i> Vídeo Demonstrativo (16:9)
+              </span>
               <p class="video-note">${item.videoPlaceholder || 'Demonstração prática e dicas de execução com especialista.'}</p>
             </div>
           </section>
@@ -536,7 +583,9 @@ class JardimApp {
         <!-- Ficha Técnica (Pares Rótulo / Valor) -->
         ${item.ficha && item.ficha.length > 0 ? `
           <section class="ficha-tecnica-card">
-            <h3 class="ficha-title">📋 Ficha Técnica</h3>
+            <h3 class="ficha-title" style="display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="clipboard-list"></i> Ficha Técnica
+            </h3>
             <div class="ficha-grid">
               ${item.ficha.map(f => `
                 <div class="ficha-item">
@@ -551,7 +600,9 @@ class JardimApp {
         <!-- Passo a Passo (Exclusivo de Serviços com 4 Etapas) -->
         ${item.passos && item.passos.length > 0 ? `
           <section>
-            <h3 class="section-title" style="margin-bottom: 14px;">👣 Passo a Passo de Execução</h3>
+            <h3 class="section-title" style="margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="list-ordered"></i> Passo a Passo de Execução
+            </h3>
             <div class="steps-container">
               ${item.passos.map(p => `
                 <div class="step-card">
@@ -586,8 +637,9 @@ class JardimApp {
         `Vídeo: ${item.nome}`,
         `
         <div style="text-align: center; display: flex; flex-direction: column; gap: 14px; align-items: center;">
-          <div style="width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.1rem; font-weight:600; padding:10px;">
-            🎬 [Player do YouTube Não Listado]
+          <div style="width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; font-size:1rem; font-weight:600; padding:10px; gap:8px;">
+            <i data-lucide="youtube" style="width: 38px; height: 38px; color: #ff0000;"></i>
+            <span>Player de Vídeo Demonstrativo</span>
           </div>
           <p style="font-size: 0.9rem; color: var(--texto-secundario); line-height: 1.5;">
             <strong>${item.videoPlaceholder}</strong><br>
@@ -621,7 +673,9 @@ class JardimApp {
           ? itensSalvos.map(item => this.renderItemCardHtml(item, true)).join('')
           : `
             <div class="empty-state">
-              <div class="empty-icon">🪴</div>
+              <div class="empty-icon-wrap">
+                <i data-lucide="bookmark" class="empty-icon-svg"></i>
+              </div>
               <h3 class="empty-title">Seu jardim ainda está vazio</h3>
               <p class="empty-desc">
                 Salve ferramentas, plantas, adubos ou serviços para ter acesso rápido sem precisar procurar toda vez.
@@ -657,7 +711,10 @@ class JardimApp {
         <div class="level-option-card ${this.userLevel === 1 ? 'selected' : ''}" data-level="1">
           <input type="radio" name="level-choice" class="level-radio" ${this.userLevel === 1 ? 'checked' : ''} />
           <div class="level-option-info">
-            <h3>🌱 Iniciante <span class="badge-nivel iniciante">Básico</span></h3>
+            <h3>
+              <i data-lucide="seedling" class="level-icon-large"></i> Iniciante 
+              <span class="badge-nivel iniciante">Básico</span>
+            </h3>
             <p>Quem está começando a cuidar de plantas em casa ou apartamento. Foco em espécies resistentes e ferramentas fundamentais.</p>
           </div>
         </div>
@@ -665,7 +722,10 @@ class JardimApp {
         <div class="level-option-card ${this.userLevel === 2 ? 'selected' : ''}" data-level="2">
           <input type="radio" name="level-choice" class="level-radio" ${this.userLevel === 2 ? 'checked' : ''} />
           <div class="level-option-info">
-            <h3>🌿 Avançado <span class="badge-nivel avancado">Intermediário</span></h3>
+            <h3>
+              <i data-lucide="sprout" class="level-icon-large"></i> Avançado 
+              <span class="badge-nivel avancado">Intermediário</span>
+            </h3>
             <p>Para quem já domina as rotinas básicas e quer se aprofundar em adubações minerais, podas de condução e espécies mais exigentes.</p>
           </div>
         </div>
@@ -673,7 +733,10 @@ class JardimApp {
         <div class="level-option-card ${this.userLevel === 3 ? 'selected' : ''}" data-level="3">
           <input type="radio" name="level-choice" class="level-radio" ${this.userLevel === 3 ? 'checked' : ''} />
           <div class="level-option-info">
-            <h3>🌳 Pro <span class="badge-nivel pro">Profissional</span></h3>
+            <h3>
+              <i data-lucide="tree-pine" class="level-icon-large"></i> Pro 
+              <span class="badge-nivel pro">Profissional</span>
+            </h3>
             <p>Para quem atua ou deseja trabalhar com paisagismo, correção técnica de solos, automação de irrigação e obras de jardim.</p>
           </div>
         </div>
@@ -681,7 +744,9 @@ class JardimApp {
 
       <!-- Nota Oficial sobre o MVP -->
       <article class="mvp-notes-card">
-        <h4>ℹ️ Sobre o MVP Jardim de Bolso (v0.1)</h4>
+        <h4 style="display: flex; align-items: center; gap: 6px;">
+          <i data-lucide="info" style="width: 16px; height: 16px;"></i> Sobre o MVP Jardim de Bolso (v0.1)
+        </h4>
         <p>
           O Jardim de Bolso é um guia de bolso direto ao ponto. Ele funciona totalmente sem login, 
           com favoritos e nível salvos diretamente no seu dispositivo.
@@ -698,7 +763,7 @@ class JardimApp {
       card.addEventListener('click', () => {
         const lvl = parseInt(card.dataset.level, 10);
         this.saveUserLevel(lvl);
-        this.showToast(`Nível alterado para ${NIVEIS[lvl].nome}`, '⭐');
+        this.showToast(`Nível alterado para ${NIVEIS[lvl].nome}`, 'check-circle-2');
         this.renderNivel();
       });
     });
@@ -717,16 +782,25 @@ class JardimApp {
         <div class="item-card-header">
           <div>
             <h4 class="item-card-title">${item.nome}</h4>
-            <span style="font-size: 0.72rem; color: var(--texto-mutado);">${moduloObj?.emoji || '🌿'} ${moduloObj?.nome || ''}</span>
+            <span style="font-size: 0.72rem; color: var(--texto-mutado); display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+              <i data-lucide="${moduloObj?.icone || 'sprout'}" style="width: 12px; height: 12px;"></i> ${moduloObj?.nome || ''}
+            </span>
           </div>
-          <span class="badge-nivel ${nivelObj.slug}">Nível ${nivelObj.nome}</span>
+          <span class="badge-nivel ${nivelObj.slug}">
+            <i data-lucide="${nivelObj.icone}" class="badge-icon"></i> Nível ${nivelObj.nome}
+          </span>
         </div>
 
         <p class="item-card-desc">${item.resumo}</p>
 
         <div class="item-card-footer">
-          <span>${item.temVideo ? '🎬 Vídeo disponível' : '📖 Ficha completa'}</span>
-          <span style="font-size: 0.95rem;">${isSaved ? '⭐ Salvo' : 'Ver detalhes →'}</span>
+          <span style="display: flex; align-items: center; gap: 5px;">
+            <i data-lucide="${item.temVideo ? 'video' : 'file-text'}" style="width: 14px; height: 14px;"></i>
+            ${item.temVideo ? 'Vídeo disponível' : 'Ficha completa'}
+          </span>
+          <span style="display: flex; align-items: center; gap: 4px; font-weight: 600;">
+            ${isSaved ? '<i data-lucide="bookmark-check" style="width:14px; height:14px; color:var(--ambar-500);"></i> Salvo' : 'Ver detalhes <i data-lucide="chevron-right" style="width:14px; height:14px;"></i>'}
+          </span>
         </div>
       </article>
     `;
