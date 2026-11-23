@@ -346,7 +346,6 @@ svg.lucide, [data-lucide] {
   border-radius: var(--raio-card);
   box-shadow: var(--sombra-md);
   position: relative;
-  overflow: hidden;
 }
 
 .tip-header {
