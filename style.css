@@ -350,7 +350,8 @@ svg.lucide, [data-lucide] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  line-height: 1;
 }
 
 .tip-label {
@@ -359,19 +360,31 @@ svg.lucide, [data-lucide] {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--verde-folha-400);
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  line-height: 1;
 }
 
-.tip-label svg {
+.tip-label span {
+  display: inline-block;
+  line-height: 1;
+}
+
+.tip-label svg, .tip-icon-svg {
   width: 14px;
   height: 14px;
+  display: block;
+  flex-shrink: 0;
+  vertical-align: unset;
 }
 
 .tip-date {
   font-size: 0.75rem;
-  opacity: 0.8;
+  opacity: 0.85;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
 }
 
 .tip-content {
@@ -707,6 +720,14 @@ svg.lucide, [data-lucide] {
   .btn-back-svg, .btn-back svg {
     stroke: #eef5f1 !important;
   }
+  .btn-back:hover {
+    background-color: #1e3a2b !important;
+    border-color: var(--verde-folha-400) !important;
+    color: #ffffff !important;
+  }
+  .btn-back:hover .btn-back-svg, .btn-back:hover svg {
+    stroke: #ffffff !important;
+  }
 }
 
 .nav-back-title {
@@ -772,11 +793,29 @@ svg.lucide, [data-lucide] {
 .btn-save-jardim svg {
   width: 18px;
   height: 18px;
+  transition: stroke 0.2s ease;
 }
 
 .btn-save-jardim:hover {
   border-color: var(--ambar-500);
-  background-color: var(--ambar-100);
+  background-color: rgba(233, 166, 58, 0.12);
+  color: #92400e;
+}
+
+.btn-save-jardim:hover svg {
+  stroke: #92400e;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-save-jardim:hover {
+    background-color: #262013 !important;
+    border-color: var(--ambar-500) !important;
+    color: #f7d174 !important;
+  }
+
+  .btn-save-jardim:hover svg {
+    stroke: #f7d174 !important;
+  }
 }
 
 .btn-save-jardim.saved {
@@ -784,6 +823,16 @@ svg.lucide, [data-lucide] {
   border-color: var(--ambar-600);
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(233, 166, 58, 0.3);
+}
+
+.btn-save-jardim.saved:hover {
+  background-color: var(--ambar-600) !important;
+  border-color: var(--ambar-700) !important;
+  color: #ffffff !important;
+}
+
+.btn-save-jardim.saved:hover svg {
+  stroke: #ffffff !important;
 }
 
 /* Espaço Reservado de Vídeo 16:9 */
