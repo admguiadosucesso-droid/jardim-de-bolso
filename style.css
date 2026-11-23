@@ -346,6 +346,8 @@ svg.lucide, [data-lucide] {
   border-radius: var(--raio-card);
   box-shadow: var(--sombra-md);
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .tip-header {
@@ -353,32 +355,32 @@ svg.lucide, [data-lucide] {
   align-items: center;
   justify-content: space-between;
   line-height: 1;
-  min-height: 24px;
+  width: 100%;
 }
 
 .tip-label {
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--verde-folha-400);
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   line-height: 1;
 }
 
 .tip-label span {
   display: inline-block;
   line-height: 1;
-  transform: translateY(0.5px);
 }
 
 .tip-label svg, .tip-icon-svg {
   width: 14px;
   height: 14px;
-  display: block;
+  display: inline-block;
   flex-shrink: 0;
+  vertical-align: middle;
   margin: 0;
   padding: 0;
 }
@@ -393,10 +395,11 @@ svg.lucide, [data-lucide] {
 }
 
 .tip-content {
-  font-size: 0.92rem;
+  font-size: 0.90rem;
   line-height: 1.45;
   font-weight: 500;
-  margin-top: 10px;
+  margin-top: 8px;
+  margin-bottom: 0;
   color: #ffffff;
 }
 
@@ -805,41 +808,51 @@ svg.lucide, [data-lucide] {
 
 .btn-save-jardim:hover {
   border-color: var(--ambar-500);
-  background-color: rgba(233, 166, 58, 0.12);
-  color: #92400e;
+  background-color: rgba(233, 166, 58, 0.15);
+  color: #b45309;
 }
 
 .btn-save-jardim:hover svg {
-  stroke: #92400e;
+  stroke: #b45309;
 }
 
 @media (prefers-color-scheme: dark) {
+  .btn-save-jardim {
+    background-color: #182c21;
+    border-color: #2b4536;
+    color: #eef5f1;
+  }
+
   .btn-save-jardim:hover {
-    background-color: #262013 !important;
-    border-color: var(--ambar-500) !important;
-    color: #f7d174 !important;
+    background-color: #2b2210 !important;
+    border-color: #f59e0b !important;
+    color: #fbbf24 !important;
   }
 
   .btn-save-jardim:hover svg {
-    stroke: #f7d174 !important;
+    stroke: #fbbf24 !important;
   }
 }
 
 .btn-save-jardim.saved {
   background-color: var(--ambar-500);
   border-color: var(--ambar-600);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(233, 166, 58, 0.3);
+  color: #101c15 !important;
+  box-shadow: 0 4px 12px rgba(233, 166, 58, 0.35);
+}
+
+.btn-save-jardim.saved svg {
+  stroke: #101c15 !important;
 }
 
 .btn-save-jardim.saved:hover {
   background-color: var(--ambar-600) !important;
-  border-color: var(--ambar-700) !important;
-  color: #ffffff !important;
+  border-color: #b45309 !important;
+  color: #101c15 !important;
 }
 
 .btn-save-jardim.saved:hover svg {
-  stroke: #ffffff !important;
+  stroke: #101c15 !important;
 }
 
 /* Espaço Reservado de Vídeo 16:9 */
@@ -1073,6 +1086,8 @@ svg.lucide, [data-lucide] {
   gap: 14px;
   box-shadow: var(--sombra-sm);
   transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .level-option-card:hover {
@@ -1081,7 +1096,7 @@ svg.lucide, [data-lucide] {
 
 .level-option-card.selected {
   border-color: var(--verde-floresta-700);
-  background-color: var(--verde-folha-50);
+  background-color: #eaf8ed;
   box-shadow: 0 4px 14px rgba(45, 106, 79, 0.15);
 }
 
@@ -1094,8 +1109,25 @@ svg.lucide, [data-lucide] {
 }
 
 @media (prefers-color-scheme: dark) {
+  .level-option-card {
+    background-color: #15241d !important;
+    border-color: #223a2f !important;
+  }
+
+  .level-option-card:hover {
+    border-color: #52b788 !important;
+  }
+
+  .level-option-card .level-option-info h3 {
+    color: #eef5f1 !important;
+  }
+
+  .level-option-card .level-option-info p {
+    color: #a3c2b2 !important;
+  }
+
   .level-option-card.selected {
-    background-color: #1a382b !important;
+    background-color: #1e3a2c !important;
     border-color: #52b788 !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
   }

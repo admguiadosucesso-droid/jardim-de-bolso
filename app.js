@@ -1,8 +1,15 @@
-// Jardim de Bolso - Controlador do App (SPA) com Ícones Premium Lucide
+// Jardim de Bolso - Controlador do App (SPA) com Ícones Premium Lucide e Nuvem Supabase
 import { MODULOS, NIVEIS, DICAS_DO_DIA, ITENS } from './data.js';
+
+// Configuração do Supabase (Nuvem em Alta Disponibilidade)
+const SUPABASE_CONFIG = {
+  url: 'https://ipsdzbkhgxtnpkwvijeq.supabase.co',
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlwc2R6YmtoZ3h0bnBrd3ZpamVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU0NjI2MzIsImV4cCI6MjExMTAzODYzMn0.8AjBwC0XllDXHx0WYgAbsS77vGKfU7MYKijW_qp5AlI'
+};
 
 class JardimApp {
   constructor() {
+    this.deviceId = this.getDeviceId();
     this.userLevel = this.loadUserLevel();
     this.favorites = this.loadFavorites();
     this.currentTab = 'inicio'; // 'inicio', 'meujardim', 'nivel'
@@ -31,6 +38,20 @@ class JardimApp {
     this.init();
   }
 
+  // Identificador único persistente do dispositivo/usuário (mantém dados isolados por usuário)
+  getDeviceId() {
+    try {
+      let id = localStorage.getItem('jardim_device_id');
+      if (!id || id.length < 8) {
+        id = 'user_' + (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36));
+        localStorage.setItem('jardim_device_id', id);
+      }
+      return id;
+    } catch (e) {
+      return 'user_guest_' + Date.now().toString(36);
+    }
+  }
+
   // Persistência segura (com fallback se localStorage estiver bloqueado)
   loadUserLevel() {
     try {
@@ -48,6 +69,29 @@ class JardimApp {
       localStorage.setItem('jardim_nivel_usuario', level.toString());
     } catch (e) {}
     this.updateHeaderBadge();
+    this.syncLevelToCloud(level);
+  }
+
+  async syncLevelToCloud(level) {
+    if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) return;
+    try {
+      await fetch(`${SUPABASE_CONFIG.url}/rest/v1/user_settings`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_CONFIG.anonKey,
+          'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify({
+          device_id: this.deviceId,
+          user_level: level,
+          updated_at: new Date().toISOString()
+        })
+      });
+    } catch (err) {
+      console.warn('Sincronização de nível na nuvem:', err);
+    }
   }
 
   loadFavorites() {
@@ -73,11 +117,94 @@ class JardimApp {
     this.updateFavBadge();
   }
 
+  async syncCloudData() {
+    if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) return;
+    const headers = {
+      'apikey': SUPABASE_CONFIG.anonKey,
+      'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+      'Content-Type': 'application/json'
+    };
+
+    // 1. Sincronizar Favoritos na Nuvem
+    try {
+      const favRes = await fetch(
+        `${SUPABASE_CONFIG.url}/rest/v1/user_favorites?device_id=eq.${encodeURIComponent(this.deviceId)}&select=item_id`,
+        { method: 'GET', headers }
+      );
+      if (favRes.ok) {
+        const cloudRows = await favRes.json();
+        const cloudIds = new Set((cloudRows || []).map(r => r.item_id));
+        let changed = false;
+
+        // Mescla itens da nuvem com locais
+        cloudIds.forEach(id => {
+          if (!this.favorites.has(id)) {
+            this.favorites.add(id);
+            changed = true;
+          }
+        });
+
+        // Envia itens locais que ainda não estão na nuvem
+        const toUpload = Array.from(this.favorites).filter(id => !cloudIds.has(id));
+        if (toUpload.length > 0) {
+          const bodyPayload = toUpload.map(itemId => ({
+            device_id: this.deviceId,
+            item_id: itemId
+          }));
+          await fetch(`${SUPABASE_CONFIG.url}/rest/v1/user_favorites`, {
+            method: 'POST',
+            headers: { ...headers, 'Prefer': 'resolution=ignore-duplicates' },
+            body: JSON.stringify(bodyPayload)
+          });
+        }
+
+        if (changed) {
+          this.saveFavorites();
+          if (this.currentTab === 'meujardim') {
+            this.renderMeuJardim();
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Sincronização de favoritos na nuvem:', err);
+    }
+
+    // 2. Sincronizar Nível do Usuário na Nuvem
+    try {
+      const settRes = await fetch(
+        `${SUPABASE_CONFIG.url}/rest/v1/user_settings?device_id=eq.${encodeURIComponent(this.deviceId)}&select=user_level`,
+        { method: 'GET', headers }
+      );
+      if (settRes.ok) {
+        const rows = await settRes.json();
+        if (rows && rows.length > 0 && rows[0].user_level) {
+          const cloudLvl = parseInt(rows[0].user_level, 10);
+          if (cloudLvl && cloudLvl !== this.userLevel) {
+            this.userLevel = cloudLvl;
+            try {
+              localStorage.setItem('jardim_nivel_usuario', cloudLvl.toString());
+            } catch (e) {}
+            this.updateHeaderBadge();
+            if (this.currentTab === 'nivel') {
+              this.renderNivel();
+            }
+          }
+        } else {
+          // Registrar configuração inicial na nuvem
+          this.syncLevelToCloud(this.userLevel);
+        }
+      }
+    } catch (err) {
+      console.warn('Sincronização de perfil na nuvem:', err);
+    }
+  }
+
   init() {
     this.bindEvents();
     this.updateHeaderBadge();
     this.updateFavBadge();
     this.render();
+    this.syncCloudData();
   }
 
   bindEvents() {
@@ -190,13 +317,14 @@ class JardimApp {
   toggleFavorite(itemId) {
     const item = ITENS.find(i => i.id === itemId);
     const itemName = item ? item.nome : 'Item';
+    const isAdding = !this.favorites.has(itemId);
 
-    if (this.favorites.has(itemId)) {
-      this.favorites.delete(itemId);
-      this.showToast(`"${itemName}" removido do Meu Jardim`, 'trash-2');
-    } else {
+    if (isAdding) {
       this.favorites.add(itemId);
       this.showToast(`"${itemName}" salvo no Meu Jardim!`, 'bookmark-check');
+    } else {
+      this.favorites.delete(itemId);
+      this.showToast(`"${itemName}" removido do Meu Jardim`, 'trash-2');
     }
     this.saveFavorites();
 
@@ -211,6 +339,42 @@ class JardimApp {
           : `<i data-lucide="bookmark"></i> Salvar no Meu Jardim`;
         this.refreshIcons();
       }
+    }
+
+    // Se estiver na aba Meu Jardim e removeu um item, atualiza a lista imediatamente
+    if (this.currentTab === 'meujardim' && !this.activeItem) {
+      this.renderMeuJardim();
+    }
+
+    // Sincroniza alteração com a nuvem Supabase em segundo plano
+    this.syncFavoriteToCloud(itemId, isAdding);
+  }
+
+  async syncFavoriteToCloud(itemId, isAdding) {
+    if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) return;
+    const headers = {
+      'apikey': SUPABASE_CONFIG.anonKey,
+      'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+      'Content-Type': 'application/json'
+    };
+    try {
+      if (isAdding) {
+        await fetch(`${SUPABASE_CONFIG.url}/rest/v1/user_favorites`, {
+          method: 'POST',
+          headers: { ...headers, 'Prefer': 'resolution=ignore-duplicates' },
+          body: JSON.stringify({
+            device_id: this.deviceId,
+            item_id: itemId
+          })
+        });
+      } else {
+        await fetch(
+          `${SUPABASE_CONFIG.url}/rest/v1/user_favorites?device_id=eq.${encodeURIComponent(this.deviceId)}&item_id=eq.${encodeURIComponent(itemId)}`,
+          { method: 'DELETE', headers }
+        );
+      }
+    } catch (err) {
+      console.warn('Erro ao sincronizar favorito com Supabase:', err);
     }
   }
 
@@ -805,7 +969,7 @@ class JardimApp {
         </h4>
         <p>
           O Jardim de Bolso é um guia prático e completo de jardinagem e paisagismo direto ao ponto. Ele funciona totalmente sem login, 
-          com favoritos e nível salvos diretamente no seu dispositivo.
+          com favoritos e nível sincronizados na nuvem via Supabase para o seu dispositivo, sem nunca se perderem ao atualizar a página.
         </p>
         <p style="margin-top: 8px;">
           • Total: 60 itens completos (15 por categoria) cadastrados.<br>
