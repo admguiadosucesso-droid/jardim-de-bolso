@@ -1230,9 +1230,9 @@ svg.lucide, [data-lucide] {
   will-change: transform;
 }
 
-/* Deslocamentos do Entalhe SVG para cada aba */
+/* Deslocamentos do Entalhe SVG para cada aba (acompanha perfeitamente a bolinha) */
 .bottom-nav-wrapper[data-active-tab="inicio"] .bottom-nav-bg-svg svg {
-  transform: translateX(calc(-50% + 11.1111%));
+  transform: translateX(calc(-50% - 11.1111%));
 }
 
 .bottom-nav-wrapper[data-active-tab="meujardim"] .bottom-nav-bg-svg svg {
@@ -1240,7 +1240,7 @@ svg.lucide, [data-lucide] {
 }
 
 .bottom-nav-wrapper[data-active-tab="nivel"] .bottom-nav-bg-svg svg {
-  transform: translateX(calc(-50% - 11.1111%));
+  transform: translateX(calc(-50% + 11.1111%));
 }
 
 .nav-svg-path {
@@ -1254,7 +1254,7 @@ svg.lucide, [data-lucide] {
   }
 }
 
-/* Bolinha Central Flutuante Deslizante (FAB) */
+/* Bolinha Central Flutuante Deslizante (FAB) com Traço Integrado */
 .floating-bubble {
   position: absolute;
   left: 0;
@@ -1270,7 +1270,7 @@ svg.lucide, [data-lucide] {
   will-change: transform;
 }
 
-/* Posições da Bolinha */
+/* Posições da Bolinha e Traço Indicador */
 .bottom-nav-wrapper[data-active-tab="inicio"] .floating-bubble {
   transform: translateX(0%);
 }
@@ -1333,6 +1333,26 @@ svg.lucide, [data-lucide] {
   transform: scale(1);
 }
 
+/* Traço Indicador Deslizante (acompanha o círculo flutuante e o ícone selecionado) */
+.active-tab-indicator-pill {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  border-radius: var(--raio-pill);
+  background-color: var(--verde-floresta-700);
+  box-shadow: 0 1px 4px rgba(45, 106, 79, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  .active-tab-indicator-pill {
+    background-color: var(--verde-folha-400);
+    box-shadow: 0 0 8px rgba(82, 183, 136, 0.45);
+  }
+}
+
 /* Conteúdo dos Botões de Navegação */
 .bottom-nav-content {
   position: relative;
@@ -1340,36 +1360,34 @@ svg.lucide, [data-lucide] {
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
   justify-content: space-between;
-  padding: 0 0 10px 0;
+  padding: 0;
 }
 
 .nav-tab-btn {
   flex: 1;
   background: none;
   border: none;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  gap: 3px;
+  justify-content: flex-start;
   color: var(--texto-mutado);
-  font-size: 0.75rem;
-  font-weight: 600;
   cursor: pointer;
-  position: relative;
-  padding-bottom: 4px;
   height: 100%;
+  padding: 0;
   transition: color 0.18s ease;
 }
 
 /* Ícones estáticos das abas */
 .nav-tab-btn .tab-icon {
+  position: absolute;
+  top: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
   transition: opacity 0.22s ease, transform 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
@@ -1384,6 +1402,7 @@ svg.lucide, [data-lucide] {
 .nav-tab-btn.active .tab-icon {
   opacity: 0;
   transform: translateY(-8px) scale(0.5);
+  pointer-events: none;
 }
 
 .nav-tab-btn:not(.active) .tab-icon {
@@ -1393,7 +1412,6 @@ svg.lucide, [data-lucide] {
 
 .nav-tab-btn.active {
   color: var(--verde-floresta-700);
-  font-weight: 700;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1402,35 +1420,18 @@ svg.lucide, [data-lucide] {
   }
 }
 
+/* Nome do elemento: posicionado fixo na base, abaixo da curvatura do entalhe */
 .nav-tab-btn .tab-label {
+  position: absolute;
+  bottom: 14px;
   font-size: 0.72rem;
   font-weight: 600;
   white-space: nowrap;
   transition: color 0.18s ease;
 }
 
-/* Indicador de Aba Ativa (Pílula Verde abaixo do texto conforme Figma) */
-.nav-tab-btn .tab-indicator {
-  width: 20px;
-  height: 3px;
-  background-color: transparent;
-  border-radius: var(--raio-pill);
-  transition: background-color 0.18s ease, transform 0.18s ease, opacity 0.18s ease;
-  margin-top: 1px;
-  opacity: 0;
-  transform: scaleX(0);
-}
-
-.nav-tab-btn.active .tab-indicator {
-  background-color: var(--verde-floresta-700);
-  opacity: 1;
-  transform: scaleX(1);
-}
-
-@media (prefers-color-scheme: dark) {
-  .nav-tab-btn.active .tab-indicator {
-    background-color: var(--verde-folha-400);
-  }
+.nav-tab-btn.active .tab-label {
+  font-weight: 700;
 }
 
 /* Contador de Favoritos */
