@@ -1,7 +1,14 @@
 # Jardim de Bolso 🌿
 
 > **Documentação do MVP clicável · Versão 0.1**  
-> Guia prático de bolso de jardinagem e paisagismo em formato de aplicação web mobile-first.
+> Guia prático de bolso de jardinagem e paisagismo em formato de aplicação web mobile-first e PWA.
+
+---
+
+## 🔗 Links Oficiais
+
+- 🌐 **Aplicação no Ar (Produção):** [jardim-de-bolso-nu.vercel.app](https://jardim-de-bolso-nu.vercel.app)
+- 🐙 **Repositório GitHub:** [github.com/admguiadosucesso-droid/jardim-de-bolso](https://github.com/admguiadosucesso-droid/jardim-de-bolso)
 
 ---
 
@@ -40,8 +47,10 @@ O **Jardim de Bolso** foi concebido para entregar consulta rápida, prática e c
    - Define o comportamento padrão dos filtros em todas as listas.
    - Informações institucionais sobre o MVP v0.1.
 
-6. **Persistência Offline**:
-   - Favoritos e nível salvos no dispositivo via `localStorage` (sem necessidade de cadastro ou login).
+6. **Ícones Premium & PWA Offline**:
+   - **Ícones Vetoriais Lucide**: Visual moderno, limpo e profissional sem emojis crus.
+   - **Progressive Web App (PWA)**: Arquivo `manifest.json` e `sw.js` com cache-first permitindo instalação como aplicativo na tela inicial do celular ou desktop e funcionamento 100% offline.
+   - **Persistência**: Favoritos e nível salvos no dispositivo via `localStorage` (sem necessidade de cadastro ou login).
 
 ---
 
@@ -56,4 +65,4 @@ O **Jardim de Bolso** foi concebido para entregar consulta rápida, prática e c
 
 ## 🚀 Publicação na Vercel
 
-Aplicação estática ultra leve, sem dependências de compilação pesadas, pronta para deploy contínuo integrado ao GitHub.
+Aplicação estática ultra leve, sem dependências de compilação pesadas, integrada ao GitHub e com deploy contínuo na Vercel.
