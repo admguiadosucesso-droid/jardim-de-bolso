@@ -53,7 +53,14 @@ class JardimApp {
   loadFavorites() {
     try {
       const saved = localStorage.getItem('jardim_favoritos');
-      return saved ? new Set(JSON.parse(saved)) : new Set();
+      if (!saved) return new Set();
+      const ids = JSON.parse(saved);
+      const validIds = new Set(ITENS.map(i => i.id));
+      const cleaned = ids.filter(id => validIds.has(id));
+      if (cleaned.length !== ids.length) {
+        localStorage.setItem('jardim_favoritos', JSON.stringify(cleaned));
+      }
+      return new Set(cleaned);
     } catch (e) {
       return new Set();
     }
