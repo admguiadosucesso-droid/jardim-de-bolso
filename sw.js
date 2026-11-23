@@ -1,5 +1,5 @@
 // Service Worker para Jardim de Bolso
-const CACHE_NAME = 'jardim-de-bolso-v6';
+const CACHE_NAME = 'jardim-de-bolso-v7';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -7,7 +7,22 @@ const ASSETS_TO_CACHE = [
   '/data.js',
   '/app.js',
   '/icon.svg',
-  '/manifest.json'
+  '/manifest.json',
+  '/images/ferramentas/tesoura-de-poda.webp',
+  '/images/ferramentas/tesoura-de-cerca-viva.webp',
+  '/images/ferramentas/pa-de-mao.webp',
+  '/images/ferramentas/ancinho.webp',
+  '/images/ferramentas/pulverizador.webp',
+  '/images/ferramentas/regador.webp',
+  '/images/ferramentas/serrote-de-poda-curvo.webp',
+  '/images/ferramentas/podao-telescopico.webp',
+  '/images/ferramentas/tesoura-de-colheita.webp',
+  '/images/ferramentas/sacho-de-duas-pontas.webp',
+  '/images/ferramentas/carrinho-de-mao.webp',
+  '/images/ferramentas/medidor-de-ph-e-umidade.webp',
+  '/images/ferramentas/vassoura-metalica.webp',
+  '/images/ferramentas/luvas-de-jardinagem.webp',
+  '/images/ferramentas/cortador-de-grama-helicoidal.webp'
 ];
 
 self.addEventListener('install', (event) => {
