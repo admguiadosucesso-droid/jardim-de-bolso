@@ -763,7 +763,7 @@ class JardimApp {
           <input type="radio" name="level-choice" class="level-radio" ${this.userLevel === 1 ? 'checked' : ''} />
           <div class="level-option-info">
             <h3>
-              <i data-lucide="seedling" class="level-icon-large"></i> Iniciante 
+              Iniciante 
               <span class="badge-nivel iniciante">Básico</span>
             </h3>
             <p>Quem está começando a cuidar de plantas em casa ou apartamento. Foco em espécies resistentes e ferramentas fundamentais.</p>
@@ -774,7 +774,7 @@ class JardimApp {
           <input type="radio" name="level-choice" class="level-radio" ${this.userLevel === 2 ? 'checked' : ''} />
           <div class="level-option-info">
             <h3>
-              <i data-lucide="sprout" class="level-icon-large"></i> Avançado 
+              Avançado 
               <span class="badge-nivel avancado">Intermediário</span>
             </h3>
             <p>Para quem já domina as rotinas básicas e quer se aprofundar em adubações minerais, podas de condução e espécies mais exigentes.</p>
@@ -785,7 +785,7 @@ class JardimApp {
           <input type="radio" name="level-choice" class="level-radio" ${this.userLevel === 3 ? 'checked' : ''} />
           <div class="level-option-info">
             <h3>
-              <i data-lucide="tree-pine" class="level-icon-large"></i> Pro 
+              Pro 
               <span class="badge-nivel pro">Profissional</span>
             </h3>
             <p>Para quem atua ou deseja trabalhar com paisagismo, correção técnica de solos, automação de irrigação e obras de jardim.</p>

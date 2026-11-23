@@ -1010,7 +1010,7 @@ svg.lucide, [data-lucide] {
   background-color: var(--bg-card);
   border: 2px solid var(--borda-suave);
   border-radius: var(--raio-card);
-  padding: 18px;
+  padding: 16px 18px;
   cursor: pointer;
   display: flex;
   align-items: flex-start;
@@ -1029,6 +1029,35 @@ svg.lucide, [data-lucide] {
   box-shadow: 0 4px 14px rgba(45, 106, 79, 0.15);
 }
 
+.level-option-card.selected .level-option-info h3 {
+  color: #112217 !important;
+}
+
+.level-option-card.selected .level-option-info p {
+  color: #1b4332 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .level-option-card.selected {
+    background-color: #1a382b !important;
+    border-color: #52b788 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .level-option-card.selected .level-option-info h3 {
+    color: #ffffff !important;
+  }
+
+  .level-option-card.selected .level-option-info p {
+    color: #c5e1d4 !important;
+  }
+
+  .empty-icon-wrap {
+    background-color: var(--verde-floresta-900) !important;
+    color: var(--verde-folha-400) !important;
+  }
+}
+
 .level-radio {
   margin-top: 3px;
   accent-color: var(--verde-floresta-700);
@@ -1043,13 +1072,11 @@ svg.lucide, [data-lucide] {
   display: flex;
   align-items: center;
   gap: 8px;
+  color: var(--texto-principal);
 }
 
 .level-icon-large {
-  width: 18px;
-  height: 18px;
-  stroke-width: 2.3px;
-  color: var(--verde-floresta-700);
+  display: none !important;
 }
 
 .level-option-info p {
