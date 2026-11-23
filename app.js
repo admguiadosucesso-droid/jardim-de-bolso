@@ -222,11 +222,15 @@ class JardimApp {
       'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
     const dataFormatada = `Hoje · ${dia} de ${meses[hoje.getMonth()]}`;
-    const index = (dia - 1) % DICAS_DO_DIA.length;
+    const totalDicas = (typeof DICAS_DO_DIA !== 'undefined' && DICAS_DO_DIA && DICAS_DO_DIA.length) ? DICAS_DO_DIA.length : 31;
+    const index = (dia - 1) % totalDicas;
+    const texto = (typeof DICAS_DO_DIA !== 'undefined' && DICAS_DO_DIA && DICAS_DO_DIA[index])
+      ? DICAS_DO_DIA[index]
+      : "Cheque a umidade da terra com a ponta do dedo antes de regar: se sair sujo, o solo ainda tem água.";
     return {
       dia: dia,
       dataFormatada: dataFormatada,
-      texto: DICAS_DO_DIA[index]
+      texto: texto
     };
   }
 
