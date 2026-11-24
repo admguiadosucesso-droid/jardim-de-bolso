@@ -63,6 +63,11 @@ class JardimApp {
       iconTogglePwd: document.getElementById('icon-toggle-pwd'),
       btnAuthSubmit: document.getElementById('btn-auth-submit'),
       btnAuthSubmitText: document.getElementById('btn-auth-submit-text'),
+      authModalTitle: document.getElementById('auth-modal-title'),
+      authModalSubtitle: document.getElementById('auth-modal-subtitle'),
+      btnToggleAuthMode: document.getElementById('btn-toggle-auth-mode'),
+      labelAuthSwitchPrompt: document.getElementById('label-auth-switch-prompt'),
+      figmaOptionsRow: document.getElementById('figma-options-row'),
 
       // Modal de Perfil
       profileModalOverlay: document.getElementById('profile-modal-overlay'),
@@ -262,16 +267,34 @@ class JardimApp {
       this.dom.tabAuthSignup.classList.toggle('active', !isLogin);
       this.dom.tabAuthSignup.setAttribute('aria-selected', !isLogin ? 'true' : 'false');
     }
+    if (this.dom.authModalTitle) {
+      this.dom.authModalTitle.textContent = isLogin ? 'Login' : 'Criar Conta';
+    }
+    if (this.dom.authModalSubtitle) {
+      this.dom.authModalSubtitle.textContent = isLogin 
+        ? 'Welcome back please login to your account.' 
+        : 'Crie sua conta para sincronizar suas plantas na nuvem.';
+    }
     if (this.dom.groupAuthName) {
       this.dom.groupAuthName.style.display = isLogin ? 'none' : 'flex';
     }
-    if (this.dom.btnForgotPasswordLink) {
-      this.dom.btnForgotPasswordLink.style.display = isLogin ? 'inline-block' : 'none';
+    if (this.dom.figmaOptionsRow) {
+      this.dom.figmaOptionsRow.style.display = isLogin ? 'flex' : 'none';
+    }
+    if (this.dom.authInputEmail) {
+      this.dom.authInputEmail.placeholder = isLogin ? 'User Name' : 'E-mail';
     }
     if (this.dom.btnAuthSubmitText) {
-      this.dom.btnAuthSubmitText.textContent = isLogin ? 'Entrar na Minha Conta' : 'Criar Minha Conta Grátis';
+      this.dom.btnAuthSubmitText.textContent = isLogin ? 'Login' : 'Cadastrar';
+    }
+    if (this.dom.labelAuthSwitchPrompt) {
+      this.dom.labelAuthSwitchPrompt.textContent = isLogin ? 'Don’t have an account?' : 'Já tem uma conta?';
+    }
+    if (this.dom.btnToggleAuthMode) {
+      this.dom.btnToggleAuthMode.textContent = isLogin ? 'Signup' : 'Entrar';
     }
     this.hideAuthAlert();
+    this.refreshIcons();
   }
 
   showAuthAlert(message, type = 'error') {
@@ -643,6 +666,14 @@ class JardimApp {
     }
     if (this.dom.tabAuthSignup) {
       this.dom.tabAuthSignup.addEventListener('click', () => this.openAuthModal('signup'));
+    }
+
+    // Alternar modo de autenticação no footer do Figma ("Don't have an account? Signup")
+    if (this.dom.btnToggleAuthMode) {
+      this.dom.btnToggleAuthMode.addEventListener('click', () => {
+        const nextMode = this.authMode === 'login' ? 'signup' : 'login';
+        this.openAuthModal(nextMode);
+      });
     }
 
     // Login com Google

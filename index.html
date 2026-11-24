@@ -16,7 +16,7 @@
   <link rel="alternate icon" type="image/svg+xml" href="./FAVICOM.svg" />
   <link rel="apple-touch-icon" href="./icon.svg" />
   <link rel="manifest" href="./manifest.json" />
-  <link rel="stylesheet" href="./style.css?v=5" />
+  <link rel="stylesheet" href="./style.css?v=6" />
 
   <!-- Supabase Client JS Oficial -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -127,35 +127,98 @@
     </div>
   </div>
 
-  <!-- Modal de Autenticação (Login / Cadastro com E-mail e Google) -->
+  <!-- Modal de Autenticação Estilo Figma (Glassmorphism & Botanical Sunset Waves) -->
   <div id="auth-modal-overlay" class="modal-overlay auth-modal-overlay" aria-hidden="true">
-    <div class="modal-dialog auth-dialog" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
-      <div class="modal-header auth-modal-header">
-        <div class="auth-header-brand">
-          <img src="./favicon.svg" alt="Jardim Perene" class="auth-brand-img" />
-          <div>
-            <h3 id="auth-modal-title" class="auth-modal-title">Jardim Perene</h3>
-            <span class="auth-modal-subtitle">Sincronize seu jardim em qualquer lugar</span>
-          </div>
+    <!-- Fundo Paisagem Vetorial do Figma (Céu Pôr-do-sol + Sol Radiante + Ondas de Colinas Verdes) -->
+    <div class="auth-landscape-bg" aria-hidden="true">
+      <div class="auth-sun-orb"></div>
+      <svg class="auth-landscape-svg" viewBox="0 0 736 981" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 450 Q 180 405, 368 438 T 736 405 L 736 981 L 0 981 Z" fill="#3D4536" />
+        <path d="M0 480 Q 220 435, 480 468 T 736 438 L 736 981 L 0 981 Z" fill="#4B563E" />
+        <path d="M0 520 Q 260 475, 520 535 T 736 495 L 736 981 L 0 981 Z" fill="#384729" />
+        <path d="M0 565 C 200 515, 380 615, 736 535 L 736 981 L 0 981 Z" fill="#4A5C35" />
+        <path d="M0 615 C 240 565, 450 665, 736 585 L 736 981 L 0 981 Z" fill="#586E40" />
+        <path d="M0 665 C 200 615, 420 725, 736 645 L 736 981 L 0 981 Z" fill="#69824D" />
+        <path d="M0 725 C 280 675, 460 785, 736 705 L 736 981 L 0 981 Z" fill="#5B7242" />
+        <path d="M0 785 C 220 735, 480 835, 736 765 L 736 981 L 0 981 Z" fill="#485B33" />
+        <path d="M0 845 C 260 795, 520 885, 736 835 L 736 981 L 0 981 Z" fill="#384827" />
+        <path d="M0 905 C 300 855, 500 925, 736 895 L 736 981 L 0 981 Z" fill="#29361C" />
+      </svg>
+    </div>
+
+    <!-- Card de Vidro Fosco (Glassmorphism Card) -->
+    <div class="modal-dialog auth-dialog figma-glass-card" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+      <button id="auth-close-btn" class="figma-glass-close-btn" aria-label="Fechar janela" title="Fechar">
+        <i data-lucide="x"></i>
+      </button>
+
+      <!-- Cabeçalho do Card -->
+      <div class="figma-glass-header">
+        <h2 id="auth-modal-title" class="figma-glass-title">Login</h2>
+        <p id="auth-modal-subtitle" class="figma-glass-subtitle">Welcome back please login to your account.</p>
+      </div>
+
+      <!-- Abas para compatibilidade de eventos -->
+      <div class="auth-tabs-nav" style="display: none;" role="tablist">
+        <button type="button" id="tab-auth-login" class="auth-tab-btn active" role="tab" aria-selected="true">Entrar</button>
+        <button type="button" id="tab-auth-signup" class="auth-tab-btn" role="tab" aria-selected="false">Criar Conta</button>
+      </div>
+
+      <div class="figma-glass-body">
+        <!-- Alerta de Feedback (Sucesso / Erro) -->
+        <div id="auth-alert" class="auth-alert figma-glass-alert" style="display: none;" role="alert">
+          <i id="auth-alert-icon" data-lucide="alert-circle"></i>
+          <span id="auth-alert-msg">Mensagem de alerta</span>
         </div>
-        <button id="auth-close-btn" class="modal-close-btn" aria-label="Fechar janela">
-          <i data-lucide="x"></i>
-        </button>
-      </div>
 
-      <!-- Abas de Alternância: Entrar / Cadastrar -->
-      <div class="auth-tabs-nav" role="tablist">
-        <button type="button" id="tab-auth-login" class="auth-tab-btn active" role="tab" aria-selected="true">
-          Entrar
-        </button>
-        <button type="button" id="tab-auth-signup" class="auth-tab-btn" role="tab" aria-selected="false">
-          Criar Conta
-        </button>
-      </div>
+        <!-- Formulário de Autenticação -->
+        <form id="auth-form" class="auth-form figma-glass-form" novalidate>
+          <!-- Campo Nome (visível apenas em Criar Conta) -->
+          <div id="group-auth-name" class="figma-input-wrapper" style="display: none;">
+            <i data-lucide="user" class="figma-input-icon"></i>
+            <input type="text" id="auth-input-name" class="figma-glass-input" placeholder="User Name / Seu Nome" autocomplete="name" />
+          </div>
 
-      <div class="auth-modal-body">
-        <!-- Botão Oficial de Login com Google -->
-        <button type="button" id="btn-google-login" class="btn-google-auth">
+          <!-- Campo E-mail / User Name -->
+          <div class="figma-input-wrapper">
+            <i data-lucide="user" class="figma-input-icon"></i>
+            <input type="email" id="auth-input-email" class="figma-glass-input" placeholder="User Name" required autocomplete="email" />
+          </div>
+
+          <!-- Campo Senha -->
+          <div class="figma-input-wrapper">
+            <i data-lucide="lock" class="figma-input-icon"></i>
+            <input type="password" id="auth-input-password" class="figma-glass-input" placeholder="Password" required autocomplete="current-password" />
+            <button type="button" id="btn-toggle-password" class="figma-pwd-toggle" title="Mostrar/ocultar senha">
+              <i data-lucide="eye-off" id="icon-toggle-pwd"></i>
+            </button>
+          </div>
+
+          <!-- Linha de Opções: Remember Me & Esqueceu Senha -->
+          <div class="figma-options-row" id="figma-options-row">
+            <label class="figma-remember-label">
+              <input type="checkbox" id="auth-remember-me" checked class="figma-checkbox" />
+              <span class="figma-custom-check">
+                <i data-lucide="check" class="check-tick-icon"></i>
+              </span>
+              <span class="remember-text">Remember me</span>
+            </label>
+            <button type="button" id="btn-forgot-password-link" class="figma-forgot-link">Esqueceu?</button>
+          </div>
+
+          <!-- Botão Principal de Login (Verde Vibrante do Figma) -->
+          <button type="submit" id="btn-auth-submit" class="figma-btn-login">
+            <span id="btn-auth-submit-text">Login</span>
+          </button>
+        </form>
+
+        <!-- Divisor Glass -->
+        <div class="figma-glass-divider">
+          <span>ou</span>
+        </div>
+
+        <!-- Botão Login com Google Glassmorphism -->
+        <button type="button" id="btn-google-login" class="figma-btn-google">
           <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20">
             <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
             <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
@@ -165,62 +228,11 @@
           <span id="label-google-auth">Continuar com o Google</span>
         </button>
 
-        <div class="auth-divider">
-          <span>ou com e-mail</span>
+        <!-- Footer do Figma: Don't have an account? Signup -->
+        <div class="figma-glass-footer">
+          <span id="label-auth-switch-prompt">Don’t have an account?</span>
+          <button type="button" id="btn-toggle-auth-mode" class="figma-footer-link">Signup</button>
         </div>
-
-        <!-- Alerta de Feedback (Sucesso / Erro) -->
-        <div id="auth-alert" class="auth-alert" style="display: none;" role="alert">
-          <i id="auth-alert-icon" data-lucide="alert-circle"></i>
-          <span id="auth-alert-msg">Mensagem de alerta</span>
-        </div>
-
-        <!-- Formulário de Autenticação -->
-        <form id="auth-form" class="auth-form" novalidate>
-          <!-- Campo Nome (visível apenas em Criar Conta) -->
-          <div id="group-auth-name" class="auth-input-group" style="display: none;">
-            <label for="auth-input-name" class="auth-label">Seu Nome</label>
-            <div class="auth-input-box">
-              <i data-lucide="user" class="input-icon"></i>
-              <input type="text" id="auth-input-name" placeholder="Ex: Maria Silva" autocomplete="name" />
-            </div>
-          </div>
-
-          <!-- Campo E-mail -->
-          <div class="auth-input-group">
-            <label for="auth-input-email" class="auth-label">E-mail</label>
-            <div class="auth-input-box">
-              <i data-lucide="mail" class="input-icon"></i>
-              <input type="email" id="auth-input-email" placeholder="seu@email.com" required autocomplete="email" />
-            </div>
-          </div>
-
-          <!-- Campo Senha -->
-          <div class="auth-input-group">
-            <div class="auth-label-row">
-              <label for="auth-input-password" class="auth-label">Senha</label>
-              <button type="button" id="btn-forgot-password-link" class="auth-forgot-link">Esqueceu?</button>
-            </div>
-            <div class="auth-input-box">
-              <i data-lucide="lock" class="input-icon"></i>
-              <input type="password" id="auth-input-password" placeholder="Mínimo 6 caracteres" required autocomplete="current-password" />
-              <button type="button" id="btn-toggle-password" class="btn-toggle-pwd" title="Mostrar/ocultar senha">
-                <i data-lucide="eye" id="icon-toggle-pwd"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Botão Principal de Submissão -->
-          <button type="submit" id="btn-auth-submit" class="btn-auth-submit">
-            <span id="btn-auth-submit-text">Entrar</span>
-            <i data-lucide="arrow-right" class="btn-arrow-icon"></i>
-          </button>
-        </form>
-
-        <!-- Footer com Informações de Segurança -->
-        <p class="auth-footer-help">
-          Seus dados e senhas são criptografados com segurança na nuvem Supabase.
-        </p>
       </div>
     </div>
   </div>
@@ -271,13 +283,13 @@
   </div>
 
   <!-- Script Principal com Módulos ES6 -->
-  <script type="module" src="./app.js?v=5"></script>
+  <script type="module" src="./app.js?v=6"></script>
 
   <!-- Registro do Service Worker (PWA Offline) -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=5').then((reg) => {
+        navigator.serviceWorker.register('./sw.js?v=6').then((reg) => {
           reg.update();
         }).catch((err) => {
           console.debug('SW registration skipped:', err);
