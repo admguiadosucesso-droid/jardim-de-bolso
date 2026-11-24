@@ -16,7 +16,7 @@
   <link rel="alternate icon" type="image/svg+xml" href="./FAVICOM.svg" />
   <link rel="apple-touch-icon" href="./icon.svg" />
   <link rel="manifest" href="./manifest.json" />
-  <link rel="stylesheet" href="./style.css?v=7" />
+  <link rel="stylesheet" href="./style.css?v=8" />
 
   <!-- Supabase Client JS Oficial -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -232,6 +232,10 @@
           <span id="label-auth-switch-prompt">Don’t have an account?</span>
           <button type="button" id="btn-toggle-auth-mode" class="figma-footer-link">Signup</button>
         </div>
+
+        <p class="figma-security-note">
+          Seus dados e senhas são criptografados com segurança na nuvem.
+        </p>
       </div>
     </div>
   </div>
@@ -252,7 +256,7 @@
             <h4 id="profile-user-name" class="profile-name">Nome do Usuário</h4>
             <span id="profile-user-email" class="profile-email">usuario@exemplo.com</span>
             <span class="profile-badge-provider" id="profile-user-provider">
-              <i data-lucide="shield-check"></i> Conta Supabase
+              <i data-lucide="shield-check"></i> Conta Verificada
             </span>
           </div>
         </div>
@@ -282,13 +286,13 @@
   </div>
 
   <!-- Script Principal com Módulos ES6 -->
-  <script type="module" src="./app.js?v=7"></script>
+  <script type="module" src="./app.js?v=8"></script>
 
   <!-- Registro do Service Worker (PWA Offline) -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=7').then((reg) => {
+        navigator.serviceWorker.register('./sw.js?v=8').then((reg) => {
           reg.update();
         }).catch((err) => {
           console.debug('SW registration skipped:', err);

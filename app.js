@@ -330,7 +330,7 @@ class JardimApp {
       });
       if (error) {
         if (error.message && error.message.toLowerCase().includes('not enabled')) {
-          this.showAuthAlert('O login do Google precisa ser ativado no painel do Supabase (Authentication > Providers > Google). Use E-mail e Senha para entrar agora!', 'info');
+          this.showAuthAlert('O login com Google está sendo configurado. Use seu E-mail e Senha para entrar!', 'info');
         } else {
           this.showAuthAlert(error.message, 'error');
         }
@@ -1494,7 +1494,7 @@ class JardimApp {
         </h4>
         <p>
           O Jardim Perene é um guia prático e completo de jardinagem e paisagismo direto ao ponto. Ele funciona totalmente sem login, 
-          com favoritos e nível sincronizados na nuvem via Supabase para o seu dispositivo, sem nunca se perderem ao atualizar a página.
+          com favoritos e nível sincronizados com segurança na nuvem para o seu dispositivo, sem nunca se perderem ao atualizar a página.
         </p>
         <p style="margin-top: 8px;">
           • Total: 60 itens completos (15 por categoria) cadastrados.<br>
