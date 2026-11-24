@@ -1,5 +1,5 @@
 // Service Worker para Jardim Perene
-const CACHE_NAME = 'jardim-perene-v10';
+const CACHE_NAME = 'jardim-perene-v11';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
