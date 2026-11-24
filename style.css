@@ -1806,6 +1806,21 @@ svg.lucide, [data-lucide] {
   margin-bottom: 24px;
 }
 
+.auth-card-logo-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.auth-card-logo-img {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  display: block;
+}
+
 .figma-glass-title {
   font-size: 2.25rem;
   font-weight: 800;
