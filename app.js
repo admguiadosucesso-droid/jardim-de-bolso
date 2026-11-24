@@ -145,7 +145,7 @@ class JardimApp {
             this.updateUserAuthUI();
 
             if (event === 'SIGNED_IN') {
-              this.closeAuthModal();
+              this.closeAuthModal(true);
               const displayName = this.getUserDisplayName();
               this.showToast(`Conectado como ${displayName}`);
               await this.syncCloudData();
@@ -154,6 +154,7 @@ class JardimApp {
               }
             } else if (event === 'SIGNED_OUT') {
               this.updateUserAuthUI();
+              this.openAuthModal('login');
               if (this.currentTab === 'meujardim') {
                 this.renderMeuJardim();
               }
@@ -170,31 +171,34 @@ class JardimApp {
     };
     setup();
 
-    // Abre automaticamente a tela de login para quem ainda não estiver logado
+    // Abre imediatamente a tela de login se não houver usuário autenticado
     setTimeout(() => {
       if (!this.currentUser) {
         this.openAuthModal('login');
       }
-    }, 400);
+    }, 150);
   }
 
   async checkExistingSession() {
-    if (!this.supabase) return;
+    if (!this.supabase) {
+      if (!this.currentUser) this.openAuthModal('login');
+      return;
+    }
     try {
       const { data: { session } } = await this.supabase.auth.getSession();
       if (session && session.user) {
         this.currentUserSession = session;
         this.currentUser = session.user;
         this.updateUserAuthUI();
+        this.closeAuthModal(true);
       } else {
-        setTimeout(() => {
-          if (!this.currentUser) {
-            this.openAuthModal('login');
-          }
-        }, 200);
+        if (!this.currentUser) {
+          this.openAuthModal('login');
+        }
       }
     } catch (e) {
       console.warn('Erro ao checar sessão:', e);
+      if (!this.currentUser) this.openAuthModal('login');
     }
   }
 
@@ -248,7 +252,11 @@ class JardimApp {
     }
   }
 
-  closeAuthModal() {
+  closeAuthModal(force = false) {
+    if (!this.currentUser && !force) {
+      // Bloqueia fechar a tela sem estar autenticado
+      return;
+    }
     if (this.dom.authModalOverlay) {
       this.dom.authModalOverlay.classList.remove('open');
       this.dom.authModalOverlay.classList.remove('active');
@@ -259,6 +267,9 @@ class JardimApp {
 
   updateAuthModalTabs() {
     const isLogin = this.authMode === 'login';
+    if (this.dom.authCloseBtn) {
+      this.dom.authCloseBtn.style.display = this.currentUser ? 'flex' : 'none';
+    }
     if (this.dom.tabAuthLogin) {
       this.dom.tabAuthLogin.classList.toggle('active', isLogin);
       this.dom.tabAuthLogin.setAttribute('aria-selected', isLogin ? 'true' : 'false');
@@ -268,12 +279,12 @@ class JardimApp {
       this.dom.tabAuthSignup.setAttribute('aria-selected', !isLogin ? 'true' : 'false');
     }
     if (this.dom.authModalTitle) {
-      this.dom.authModalTitle.textContent = isLogin ? 'Login' : 'Criar Conta';
+      this.dom.authModalTitle.textContent = isLogin ? 'Entrar' : 'Criar Conta';
     }
     if (this.dom.authModalSubtitle) {
       this.dom.authModalSubtitle.textContent = isLogin 
-        ? 'Welcome back please login to your account.' 
-        : 'Crie sua conta para sincronizar suas plantas na nuvem.';
+        ? 'Bem-vindo(a) de volta! Acesse sua conta.' 
+        : 'Crie sua conta para salvar suas plantas e preferências.';
     }
     if (this.dom.groupAuthName) {
       this.dom.groupAuthName.style.display = isLogin ? 'none' : 'flex';
@@ -282,16 +293,19 @@ class JardimApp {
       this.dom.figmaOptionsRow.style.display = isLogin ? 'flex' : 'none';
     }
     if (this.dom.authInputEmail) {
-      this.dom.authInputEmail.placeholder = isLogin ? 'User Name' : 'E-mail';
+      this.dom.authInputEmail.placeholder = 'Seu e-mail';
+    }
+    if (this.dom.authInputPassword) {
+      this.dom.authInputPassword.placeholder = isLogin ? 'Sua senha' : 'Crie uma senha (mínimo 6 dígitos)';
     }
     if (this.dom.btnAuthSubmitText) {
-      this.dom.btnAuthSubmitText.textContent = isLogin ? 'Login' : 'Cadastrar';
+      this.dom.btnAuthSubmitText.textContent = isLogin ? 'Entrar' : 'Cadastrar';
     }
     if (this.dom.labelAuthSwitchPrompt) {
-      this.dom.labelAuthSwitchPrompt.textContent = isLogin ? 'Don’t have an account?' : 'Já tem uma conta?';
+      this.dom.labelAuthSwitchPrompt.textContent = isLogin ? 'Não tem uma conta?' : 'Já tem uma conta?';
     }
     if (this.dom.btnToggleAuthMode) {
-      this.dom.btnToggleAuthMode.textContent = isLogin ? 'Signup' : 'Entrar';
+      this.dom.btnToggleAuthMode.textContent = isLogin ? 'Cadastre-se' : 'Entrar';
     }
     this.hideAuthAlert();
     this.refreshIcons();
@@ -382,7 +396,7 @@ class JardimApp {
             this.showAuthAlert(error.message, 'error');
           }
         } else {
-          this.closeAuthModal();
+          this.closeAuthModal(true);
         }
       } else {
         const { data, error } = await this.supabase.auth.signUp({
@@ -402,7 +416,7 @@ class JardimApp {
             this.showAuthAlert(error.message, 'error');
           }
         } else if (data.session) {
-          this.closeAuthModal();
+          this.closeAuthModal(true);
           this.showToast('Conta criada com sucesso! Bem-vindo(a)!');
         } else {
           this.showAuthAlert('Conta criada com sucesso! Enviamos um link de confirmação para seu e-mail.', 'success');
@@ -490,6 +504,7 @@ class JardimApp {
       await this.supabase.auth.signOut();
       this.closeProfileModal();
       this.showToast('Você saiu da sua conta.');
+      this.openAuthModal('login');
     } catch (err) {
       console.warn('Erro ao sair da conta:', err);
     }
@@ -652,11 +667,20 @@ class JardimApp {
 
     // Modal de Autenticação
     if (this.dom.authCloseBtn) {
-      this.dom.authCloseBtn.addEventListener('click', () => this.closeAuthModal());
+      this.dom.authCloseBtn.addEventListener('click', () => {
+        if (this.currentUser) {
+          this.closeAuthModal(true);
+        } else {
+          this.showAuthAlert('Por favor, faça login ou cadastre-se para acessar o Jardim.', 'info');
+        }
+      });
     }
     if (this.dom.authModalOverlay) {
       this.dom.authModalOverlay.addEventListener('click', (e) => {
-        if (e.target === this.dom.authModalOverlay) this.closeAuthModal();
+        // Bloqueia fechamento ao clicar na tela se não estiver autenticado
+        if (e.target === this.dom.authModalOverlay && this.currentUser) {
+          this.closeAuthModal(true);
+        }
       });
     }
 

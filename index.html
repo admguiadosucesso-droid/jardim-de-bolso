@@ -16,7 +16,7 @@
   <link rel="alternate icon" type="image/svg+xml" href="./FAVICOM.svg" />
   <link rel="apple-touch-icon" href="./icon.svg" />
   <link rel="manifest" href="./manifest.json" />
-  <link rel="stylesheet" href="./style.css?v=9" />
+  <link rel="stylesheet" href="./style.css?v=10" />
 
   <!-- Supabase Client JS Oficial -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -127,17 +127,17 @@
   </div>
 
   <!-- Modal de Autenticação Estilo Figma (Glassmorphism com Fundo Botânico do App) -->
-  <div id="auth-modal-overlay" class="modal-overlay auth-modal-overlay" aria-hidden="true">
+  <div id="auth-modal-overlay" class="modal-overlay auth-modal-overlay open active" aria-hidden="false">
     <!-- Card de Vidro Fosco (Glassmorphism Card) -->
     <div class="modal-dialog auth-dialog figma-glass-card" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
-      <button id="auth-close-btn" class="figma-glass-close-btn" aria-label="Fechar janela" title="Fechar">
+      <button id="auth-close-btn" class="figma-glass-close-btn" style="display: none;" aria-label="Fechar janela" title="Fechar">
         <i data-lucide="x"></i>
       </button>
 
       <!-- Cabeçalho do Card -->
       <div class="figma-glass-header">
-        <h2 id="auth-modal-title" class="figma-glass-title">Login</h2>
-        <p id="auth-modal-subtitle" class="figma-glass-subtitle">Welcome back please login to your account.</p>
+        <h2 id="auth-modal-title" class="figma-glass-title">Entrar</h2>
+        <p id="auth-modal-subtitle" class="figma-glass-subtitle">Bem-vindo(a) de volta! Acesse sua conta.</p>
       </div>
 
       <!-- Abas para compatibilidade de eventos -->
@@ -158,39 +158,39 @@
           <!-- Campo Nome (visível apenas em Criar Conta) -->
           <div id="group-auth-name" class="figma-input-wrapper" style="display: none;">
             <i data-lucide="user" class="figma-input-icon"></i>
-            <input type="text" id="auth-input-name" class="figma-glass-input" placeholder="User Name / Seu Nome" autocomplete="name" />
+            <input type="text" id="auth-input-name" class="figma-glass-input" placeholder="Seu nome completo" autocomplete="name" />
           </div>
 
-          <!-- Campo E-mail / User Name -->
+          <!-- Campo E-mail -->
           <div class="figma-input-wrapper">
-            <i data-lucide="user" class="figma-input-icon"></i>
-            <input type="email" id="auth-input-email" class="figma-glass-input" placeholder="User Name" required autocomplete="email" />
+            <i data-lucide="mail" class="figma-input-icon"></i>
+            <input type="email" id="auth-input-email" class="figma-glass-input" placeholder="Seu e-mail" required autocomplete="email" />
           </div>
 
           <!-- Campo Senha -->
           <div class="figma-input-wrapper">
             <i data-lucide="lock" class="figma-input-icon"></i>
-            <input type="password" id="auth-input-password" class="figma-glass-input" placeholder="Password" required autocomplete="current-password" />
+            <input type="password" id="auth-input-password" class="figma-glass-input" placeholder="Sua senha" required autocomplete="current-password" />
             <button type="button" id="btn-toggle-password" class="figma-pwd-toggle" title="Mostrar/ocultar senha">
               <i data-lucide="eye-off" id="icon-toggle-pwd"></i>
             </button>
           </div>
 
-          <!-- Linha de Opções: Remember Me & Esqueceu Senha -->
+          <!-- Linha de Opções: Lembrar de Mim & Esqueceu Senha -->
           <div class="figma-options-row" id="figma-options-row">
             <label class="figma-remember-label">
               <input type="checkbox" id="auth-remember-me" checked class="figma-checkbox" />
               <span class="figma-custom-check">
                 <i data-lucide="check" class="check-tick-icon"></i>
               </span>
-              <span class="remember-text">Remember me</span>
+              <span class="remember-text">Lembrar de mim</span>
             </label>
-            <button type="button" id="btn-forgot-password-link" class="figma-forgot-link">Esqueceu?</button>
+            <button type="button" id="btn-forgot-password-link" class="figma-forgot-link">Esqueceu a senha?</button>
           </div>
 
-          <!-- Botão Principal de Login (Verde Vibrante do Figma) -->
+          <!-- Botão Principal de Entrada -->
           <button type="submit" id="btn-auth-submit" class="figma-btn-login">
-            <span id="btn-auth-submit-text">Login</span>
+            <span id="btn-auth-submit-text">Entrar</span>
           </button>
         </form>
 
@@ -210,10 +210,10 @@
           <span id="label-google-auth">Continuar com o Google</span>
         </button>
 
-        <!-- Footer do Figma: Don't have an account? Signup -->
+        <!-- Footer: Não tem uma conta? Cadastre-se -->
         <div class="figma-glass-footer">
-          <span id="label-auth-switch-prompt">Don’t have an account?</span>
-          <button type="button" id="btn-toggle-auth-mode" class="figma-footer-link">Signup</button>
+          <span id="label-auth-switch-prompt">Não tem uma conta?</span>
+          <button type="button" id="btn-toggle-auth-mode" class="figma-footer-link">Cadastre-se</button>
         </div>
 
         <p class="figma-security-note">
@@ -269,13 +269,13 @@
   </div>
 
   <!-- Script Principal com Módulos ES6 -->
-  <script type="module" src="./app.js?v=9"></script>
+  <script type="module" src="./app.js?v=10"></script>
 
   <!-- Registro do Service Worker (PWA Offline) -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=9').then((reg) => {
+        navigator.serviceWorker.register('./sw.js?v=10').then((reg) => {
           reg.update();
         }).catch((err) => {
           console.debug('SW registration skipped:', err);
