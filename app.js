@@ -167,6 +167,13 @@ class JardimApp {
         this.currentUserSession = session;
         this.currentUser = session.user;
         this.updateUserAuthUI();
+      } else {
+        // Se o usuário ainda não está conectado, abre automaticamente a tela de login
+        setTimeout(() => {
+          if (!this.currentUser) {
+            this.openAuthModal('login');
+          }
+        }, 350);
       }
     } catch (e) {
       console.warn('Erro ao checar sessão:', e);
