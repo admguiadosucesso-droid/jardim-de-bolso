@@ -1,5 +1,5 @@
 // Service Worker para Jardim de Bolso
-const CACHE_NAME = 'jardim-de-bolso-v15';
+const CACHE_NAME = 'jardim-de-bolso-v16';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

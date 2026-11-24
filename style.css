@@ -244,7 +244,7 @@ svg.lucide, [data-lucide] {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding: 16px 18px 24px 18px;
+  padding: 16px 18px 84px 18px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -252,6 +252,8 @@ svg.lucide, [data-lucide] {
   scrollbar-width: thin;
   scrollbar-color: var(--borda-media) transparent;
   scrollbar-gutter: stable;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 70px), transparent calc(100% - 15px));
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 70px), transparent calc(100% - 15px));
 }
 
 .main-content::-webkit-scrollbar {
@@ -607,6 +609,9 @@ svg.lucide, [data-lucide] {
   position: relative;
   background-color: var(--verde-folha-50);
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .item-card-img {
@@ -614,6 +619,24 @@ svg.lucide, [data-lucide] {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* Imagens em Cards de Adubos, Ferramentas e Plantas: fundo branco e ajuste sem cortes */
+.item-card-media.bg-white-contain,
+.item-card[data-modulo="adubacao"] .item-card-media,
+.item-card[data-modulo="ferramentas"] .item-card-media,
+.item-card[data-modulo="plantas"] .item-card-media {
+  background-color: #ffffff !important;
+  padding: 4px;
+}
+
+.item-card-media.bg-white-contain .item-card-img,
+.item-card[data-modulo="adubacao"] .item-card-img,
+.item-card[data-modulo="ferramentas"] .item-card-img,
+.item-card[data-modulo="plantas"] .item-card-img {
+  object-fit: contain !important;
+  width: 100%;
+  height: 100%;
 }
 
 .item-card-body {
@@ -668,6 +691,9 @@ svg.lucide, [data-lucide] {
   background-color: #1b4332;
   box-shadow: var(--sombra-md);
   margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .detail-hero-img {
@@ -675,6 +701,24 @@ svg.lucide, [data-lucide] {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* Hero Banner em Detalhes de Adubos, Ferramentas e Plantas: fundo branco e ajuste sem cortes */
+.detail-hero-banner.bg-white-contain,
+.detail-hero-banner[data-modulo="adubacao"],
+.detail-hero-banner[data-modulo="ferramentas"],
+.detail-hero-banner[data-modulo="plantas"] {
+  background-color: #ffffff !important;
+  padding: 10px;
+}
+
+.detail-hero-banner.bg-white-contain .detail-hero-img,
+.detail-hero-banner[data-modulo="adubacao"] .detail-hero-img,
+.detail-hero-banner[data-modulo="ferramentas"] .detail-hero-img,
+.detail-hero-banner[data-modulo="plantas"] .detail-hero-img {
+  object-fit: contain !important;
+  width: 100%;
+  height: 100%;
 }
 
 /* Botão Voltar Superior */
@@ -1299,6 +1343,8 @@ svg.lucide, [data-lucide] {
   position: relative;
   transform: translateY(-24px);
   transition: box-shadow 0.25s ease, background 0.25s ease;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 @media (prefers-color-scheme: dark) {

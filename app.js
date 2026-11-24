@@ -760,7 +760,7 @@ class JardimApp {
 
       <div class="detail-view">
         <!-- Banner Fotográfico em Alta Resolução -->
-        <div class="detail-hero-banner">
+        <div class="detail-hero-banner ${item.modulo !== 'servicos' ? 'bg-white-contain' : ''}" data-modulo="${item.modulo}">
           <img src="${item.imagem}" alt="${item.nome}" class="detail-hero-img" loading="eager" onerror="this.src='icon.svg'" />
         </div>
 
@@ -1009,10 +1009,11 @@ class JardimApp {
     const nivelObj = NIVEIS[item.nivel] || NIVEIS[1];
     const isSaved = this.favorites.has(item.id);
     const moduloObj = MODULOS.find(m => m.id === item.modulo);
+    const isWhiteBg = item.modulo !== 'servicos';
 
     return `
-      <article class="item-card" data-item-id="${item.id}" role="button" tabindex="0" aria-label="${item.nome}">
-        <div class="item-card-media">
+      <article class="item-card" data-item-id="${item.id}" data-modulo="${item.modulo}" role="button" tabindex="0" aria-label="${item.nome}">
+        <div class="item-card-media ${isWhiteBg ? 'bg-white-contain' : ''}">
           <img src="${item.imagem}" alt="${item.nome}" class="item-card-img" loading="lazy" onerror="this.src='icon.svg'" />
         </div>
         <div class="item-card-body">
