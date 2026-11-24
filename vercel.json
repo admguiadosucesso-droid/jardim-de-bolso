@@ -2,5 +2,9 @@
   "version": 2,
   "name": "jardim-de-bolso",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/LOGO.svg", "destination": "/logo.svg" },
+    { "source": "/FAVICON.svg", "destination": "/favicon.svg" }
+  ]
 }

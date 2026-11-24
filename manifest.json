@@ -1,6 +1,6 @@
 {
-  "name": "Jardim de Bolso",
-  "short_name": "Jardim",
+  "name": "Jardim Perene",
+  "short_name": "Jardim Perene",
   "description": "Guia Prático de Jardinagem e Paisagismo em formato de aplicativo móvel.",
   "start_url": "/",
   "scope": "/",
@@ -9,6 +9,12 @@
   "background_color": "#1b4332",
   "theme_color": "#1b4332",
   "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
     {
       "src": "icon.svg",
       "sizes": "192x192 512x512",

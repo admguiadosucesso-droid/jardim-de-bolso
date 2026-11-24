@@ -1,7 +1,7 @@
-# Jardim de Bolso 🌿
+# Jardim Perene 🌿
 
 > **Documentação da Aplicação · Versão Oficial**  
-> Guia prático de bolso de jardinagem e paisagismo em formato de aplicação web mobile-first e PWA.
+> Guia prático de jardinagem e paisagismo em formato de aplicação web mobile-first e PWA.
 
 ---
 
@@ -14,7 +14,7 @@
 
 ## 📌 Visão Geral
 
-O **Jardim de Bolso** foi concebido para entregar consulta rápida, prática e confiável sobre ferramentas, plantas, adubação e serviços de jardinagem. O conteúdo é organizado de forma inteligente por nível de experiência do usuário: **Iniciante**, **Avançado** e **Pro**.
+O **Jardim Perene** foi concebido para entregar consulta rápida, prática e confiável sobre ferramentas, plantas, adubação e serviços de jardinagem. O conteúdo é organizado de forma inteligente por nível de experiência do usuário: **Iniciante**, **Avançado** e **Pro**.
 
 ---
 

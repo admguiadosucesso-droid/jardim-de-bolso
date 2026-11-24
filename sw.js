@@ -1,11 +1,15 @@
-// Service Worker para Jardim de Bolso
-const CACHE_NAME = 'jardim-de-bolso-v17';
+// Service Worker para Jardim Perene
+const CACHE_NAME = 'jardim-perene-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/style.css',
   '/data.js',
   '/app.js',
+  '/favicon.svg',
+  '/FAVICOM.svg',
+  '/logo.svg',
+  '/LOGO.svg',
   '/icon.svg',
   '/manifest.json',
 

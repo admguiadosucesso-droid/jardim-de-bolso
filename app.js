@@ -1,4 +1,4 @@
-// Jardim de Bolso - Controlador do App (SPA) com Ícones Premium Lucide e Nuvem Supabase
+// Jardim Perene - Controlador do App (SPA) com Ícones Premium Lucide e Nuvem Supabase
 import { MODULOS, NIVEIS, DICAS_DO_DIA, ITENS } from './data.js';
 
 // Configuração do Supabase (Nuvem em Alta Disponibilidade)
@@ -454,7 +454,7 @@ class JardimApp {
             placeholder="Buscar plantas, ferramentas, adubos..." 
             value="${this.searchQuery}"
             autocomplete="off"
-            aria-label="Buscar no Jardim de Bolso"
+            aria-label="Buscar no Jardim Perene"
           />
           <button id="search-clear-btn" class="search-clear-btn ${this.searchQuery ? 'visible' : ''}" title="Limpar busca">
             <i data-lucide="x"></i>
@@ -976,11 +976,14 @@ class JardimApp {
 
       <!-- Informações sobre o Aplicativo -->
       <article class="about-notes-card">
+        <div style="text-align: center; margin-bottom: 14px;">
+          <img src="./logo.svg" alt="Jardim Perene" style="max-width: 140px; height: auto; display: inline-block;" />
+        </div>
         <h4 style="display: flex; align-items: center; gap: 6px;">
-          <i data-lucide="info" style="width: 16px; height: 16px;"></i> Sobre o Jardim de Bolso
+          <i data-lucide="info" style="width: 16px; height: 16px;"></i> Sobre o Jardim Perene
         </h4>
         <p>
-          O Jardim de Bolso é um guia prático e completo de jardinagem e paisagismo direto ao ponto. Ele funciona totalmente sem login, 
+          O Jardim Perene é um guia prático e completo de jardinagem e paisagismo direto ao ponto. Ele funciona totalmente sem login, 
           com favoritos e nível sincronizados na nuvem via Supabase para o seu dispositivo, sem nunca se perderem ao atualizar a página.
         </p>
         <p style="margin-top: 8px;">
