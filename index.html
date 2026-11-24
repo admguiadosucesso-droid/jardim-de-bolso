@@ -16,7 +16,7 @@
   <link rel="alternate icon" type="image/svg+xml" href="./FAVICOM.svg" />
   <link rel="apple-touch-icon" href="./icon.svg" />
   <link rel="manifest" href="./manifest.json" />
-  <link rel="stylesheet" href="./style.css?v=8" />
+  <link rel="stylesheet" href="./style.css?v=9" />
 
   <!-- Supabase Client JS Oficial -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -126,25 +126,8 @@
     </div>
   </div>
 
-  <!-- Modal de Autenticação Estilo Figma (Glassmorphism & Botanical Sunset Waves) -->
+  <!-- Modal de Autenticação Estilo Figma (Glassmorphism com Fundo Botânico do App) -->
   <div id="auth-modal-overlay" class="modal-overlay auth-modal-overlay" aria-hidden="true">
-    <!-- Fundo Paisagem Vetorial do Figma (Céu Pôr-do-sol + Sol Radiante + Ondas de Colinas Verdes) -->
-    <div class="auth-landscape-bg" aria-hidden="true">
-      <div class="auth-sun-orb"></div>
-      <svg class="auth-landscape-svg" viewBox="0 0 736 981" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 450 Q 180 405, 368 438 T 736 405 L 736 981 L 0 981 Z" fill="#3D4536" />
-        <path d="M0 480 Q 220 435, 480 468 T 736 438 L 736 981 L 0 981 Z" fill="#4B563E" />
-        <path d="M0 520 Q 260 475, 520 535 T 736 495 L 736 981 L 0 981 Z" fill="#384729" />
-        <path d="M0 565 C 200 515, 380 615, 736 535 L 736 981 L 0 981 Z" fill="#4A5C35" />
-        <path d="M0 615 C 240 565, 450 665, 736 585 L 736 981 L 0 981 Z" fill="#586E40" />
-        <path d="M0 665 C 200 615, 420 725, 736 645 L 736 981 L 0 981 Z" fill="#69824D" />
-        <path d="M0 725 C 280 675, 460 785, 736 705 L 736 981 L 0 981 Z" fill="#5B7242" />
-        <path d="M0 785 C 220 735, 480 835, 736 765 L 736 981 L 0 981 Z" fill="#485B33" />
-        <path d="M0 845 C 260 795, 520 885, 736 835 L 736 981 L 0 981 Z" fill="#384827" />
-        <path d="M0 905 C 300 855, 500 925, 736 895 L 736 981 L 0 981 Z" fill="#29361C" />
-      </svg>
-    </div>
-
     <!-- Card de Vidro Fosco (Glassmorphism Card) -->
     <div class="modal-dialog auth-dialog figma-glass-card" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
       <button id="auth-close-btn" class="figma-glass-close-btn" aria-label="Fechar janela" title="Fechar">
@@ -286,13 +269,13 @@
   </div>
 
   <!-- Script Principal com Módulos ES6 -->
-  <script type="module" src="./app.js?v=8"></script>
+  <script type="module" src="./app.js?v=9"></script>
 
   <!-- Registro do Service Worker (PWA Offline) -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=8').then((reg) => {
+        navigator.serviceWorker.register('./sw.js?v=9').then((reg) => {
           reg.update();
         }).catch((err) => {
           console.debug('SW registration skipped:', err);
