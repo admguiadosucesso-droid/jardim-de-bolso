@@ -16,7 +16,7 @@
   <link rel="alternate icon" type="image/svg+xml" href="./FAVICOM.svg" />
   <link rel="apple-touch-icon" href="./icon.svg" />
   <link rel="manifest" href="./manifest.json" />
-  <link rel="stylesheet" href="./style.css?v=11" />
+  <link rel="stylesheet" href="./style.css?v=12" />
 
   <!-- Supabase Client JS Oficial -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -42,10 +42,10 @@
       </div>
 
       <div class="header-actions">
-        <!-- Botão de Entrar / Perfil de Usuário -->
-        <button id="btn-auth-user" class="btn-header-auth" title="Entrar na sua conta" aria-label="Entrar na conta">
-          <i data-lucide="user" class="auth-icon"></i>
-          <span id="label-auth-user">Entrar</span>
+        <!-- Botão de Sair do Aplicativo -->
+        <button id="btn-auth-user" class="btn-header-auth" title="Sair da conta" aria-label="Sair da conta">
+          <i data-lucide="log-out" class="auth-icon"></i>
+          <span id="label-auth-user">Sair</span>
         </button>
 
         <!-- Pílula do Nível do Usuário -->
@@ -130,14 +130,9 @@
   <div id="auth-modal-overlay" class="modal-overlay auth-modal-overlay open active" aria-hidden="false">
     <!-- Card de Vidro Fosco (Glassmorphism Card) -->
     <div class="modal-dialog auth-dialog figma-glass-card" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
-      <button id="auth-close-btn" class="figma-glass-close-btn" style="display: none;" aria-label="Fechar janela" title="Fechar">
-        <i data-lucide="x"></i>
-      </button>
-
       <!-- Cabeçalho do Card -->
       <div class="figma-glass-header">
         <h2 id="auth-modal-title" class="figma-glass-title">Entrar</h2>
-        <p id="auth-modal-subtitle" class="figma-glass-subtitle">Bem-vindo(a) de volta! Acesse sua conta.</p>
       </div>
 
       <!-- Abas para compatibilidade de eventos -->
@@ -269,13 +264,13 @@
   </div>
 
   <!-- Script Principal com Módulos ES6 -->
-  <script type="module" src="./app.js?v=11"></script>
+  <script type="module" src="./app.js?v=12"></script>
 
   <!-- Registro do Service Worker (PWA Offline) -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=11').then((reg) => {
+        navigator.serviceWorker.register('./sw.js?v=12').then((reg) => {
           reg.update();
         }).catch((err) => {
           console.debug('SW registration skipped:', err);

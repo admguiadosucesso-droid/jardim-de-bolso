@@ -219,20 +219,14 @@ class JardimApp {
 
   updateUserAuthUI() {
     if (this.dom.labelAuthUser && this.dom.btnAuthUser) {
+      this.dom.labelAuthUser.textContent = 'Sair';
+      this.dom.btnAuthUser.title = 'Sair da conta';
+      const icon = this.dom.btnAuthUser.querySelector('i');
+      if (icon) icon.setAttribute('data-lucide', 'log-out');
       if (this.currentUser) {
-        const name = this.getUserDisplayName();
-        const firstName = name.split(' ')[0];
-        this.dom.labelAuthUser.textContent = firstName.length > 10 ? firstName.slice(0, 9) + '…' : firstName;
         this.dom.btnAuthUser.classList.add('logged-in');
-        this.dom.btnAuthUser.title = `Conectado como ${name} (${this.currentUser.email})`;
-        const icon = this.dom.btnAuthUser.querySelector('i');
-        if (icon) icon.setAttribute('data-lucide', 'user-check');
       } else {
-        this.dom.labelAuthUser.textContent = 'Entrar';
         this.dom.btnAuthUser.classList.remove('logged-in');
-        this.dom.btnAuthUser.title = 'Entrar na sua conta';
-        const icon = this.dom.btnAuthUser.querySelector('i');
-        if (icon) icon.setAttribute('data-lucide', 'user');
       }
       this.refreshIcons();
     }
@@ -282,9 +276,8 @@ class JardimApp {
       this.dom.authModalTitle.textContent = isLogin ? 'Entrar' : 'Criar Conta';
     }
     if (this.dom.authModalSubtitle) {
-      this.dom.authModalSubtitle.textContent = isLogin 
-        ? 'Bem-vindo(a) de volta! Acesse sua conta.' 
-        : 'Crie sua conta para salvar suas plantas e preferências.';
+      this.dom.authModalSubtitle.textContent = '';
+      this.dom.authModalSubtitle.style.display = 'none';
     }
     if (this.dom.groupAuthName) {
       this.dom.groupAuthName.style.display = isLogin ? 'none' : 'flex';
@@ -654,14 +647,10 @@ class JardimApp {
       });
     });
 
-    // Clique no botão de login / perfil no topo
+    // Clique no botão Sair no topo
     if (this.dom.btnAuthUser) {
       this.dom.btnAuthUser.addEventListener('click', () => {
-        if (this.currentUser) {
-          this.openProfileModal();
-        } else {
-          this.openAuthModal('login');
-        }
+        this.handleLogout();
       });
     }
 
