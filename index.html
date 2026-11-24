@@ -18,6 +18,9 @@
   <link rel="manifest" href="./manifest.json" />
   <link rel="stylesheet" href="./style.css" />
 
+  <!-- Supabase Client JS Oficial -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <!-- Lucide Icons Premium Library -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -39,9 +42,15 @@
       </div>
 
       <div class="header-actions">
+        <!-- Botão de Entrar / Perfil de Usuário -->
+        <button id="btn-auth-user" class="btn-header-auth" title="Entrar na sua conta" aria-label="Entrar na conta">
+          <i data-lucide="user" class="auth-icon"></i>
+          <span id="label-auth-user">Entrar</span>
+        </button>
+
         <!-- Pílula do Nível do Usuário -->
         <button id="user-level-pill" class="user-level-pill" title="Clique para alterar seu nível de experiência" aria-label="Alterar nível">
-          <i data-lucide="user" class="pill-icon"></i>
+          <i data-lucide="award" class="pill-icon"></i>
           <span id="user-level-header-text">Iniciante</span>
         </button>
       </div>
@@ -114,6 +123,149 @@
       </div>
       <div id="modal-body">
         <!-- Conteúdo dinâmico do modal -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Autenticação (Login / Cadastro com E-mail e Google) -->
+  <div id="auth-modal-overlay" class="modal-overlay auth-modal-overlay" aria-hidden="true">
+    <div class="modal-dialog auth-dialog" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+      <div class="modal-header auth-modal-header">
+        <div class="auth-header-brand">
+          <img src="./favicon.svg" alt="Jardim Perene" class="auth-brand-img" />
+          <div>
+            <h3 id="auth-modal-title" class="auth-modal-title">Jardim Perene</h3>
+            <span class="auth-modal-subtitle">Sincronize seu jardim em qualquer lugar</span>
+          </div>
+        </div>
+        <button id="auth-close-btn" class="modal-close-btn" aria-label="Fechar janela">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <!-- Abas de Alternância: Entrar / Cadastrar -->
+      <div class="auth-tabs-nav" role="tablist">
+        <button type="button" id="tab-auth-login" class="auth-tab-btn active" role="tab" aria-selected="true">
+          Entrar
+        </button>
+        <button type="button" id="tab-auth-signup" class="auth-tab-btn" role="tab" aria-selected="false">
+          Criar Conta
+        </button>
+      </div>
+
+      <div class="auth-modal-body">
+        <!-- Botão Oficial de Login com Google -->
+        <button type="button" id="btn-google-login" class="btn-google-auth">
+          <svg class="google-icon" viewBox="0 0 24 24" width="20" height="20">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.17 0 9.97 0 12s.45 3.83 1.25 5.42l4.03-3.15z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+          </svg>
+          <span id="label-google-auth">Continuar com o Google</span>
+        </button>
+
+        <div class="auth-divider">
+          <span>ou com e-mail</span>
+        </div>
+
+        <!-- Alerta de Feedback (Sucesso / Erro) -->
+        <div id="auth-alert" class="auth-alert" style="display: none;" role="alert">
+          <i id="auth-alert-icon" data-lucide="alert-circle"></i>
+          <span id="auth-alert-msg">Mensagem de alerta</span>
+        </div>
+
+        <!-- Formulário de Autenticação -->
+        <form id="auth-form" class="auth-form" novalidate>
+          <!-- Campo Nome (visível apenas em Criar Conta) -->
+          <div id="group-auth-name" class="auth-input-group" style="display: none;">
+            <label for="auth-input-name" class="auth-label">Seu Nome</label>
+            <div class="auth-input-box">
+              <i data-lucide="user" class="input-icon"></i>
+              <input type="text" id="auth-input-name" placeholder="Ex: Maria Silva" autocomplete="name" />
+            </div>
+          </div>
+
+          <!-- Campo E-mail -->
+          <div class="auth-input-group">
+            <label for="auth-input-email" class="auth-label">E-mail</label>
+            <div class="auth-input-box">
+              <i data-lucide="mail" class="input-icon"></i>
+              <input type="email" id="auth-input-email" placeholder="seu@email.com" required autocomplete="email" />
+            </div>
+          </div>
+
+          <!-- Campo Senha -->
+          <div class="auth-input-group">
+            <div class="auth-label-row">
+              <label for="auth-input-password" class="auth-label">Senha</label>
+              <button type="button" id="btn-forgot-password-link" class="auth-forgot-link">Esqueceu?</button>
+            </div>
+            <div class="auth-input-box">
+              <i data-lucide="lock" class="input-icon"></i>
+              <input type="password" id="auth-input-password" placeholder="Mínimo 6 caracteres" required autocomplete="current-password" />
+              <button type="button" id="btn-toggle-password" class="btn-toggle-pwd" title="Mostrar/ocultar senha">
+                <i data-lucide="eye" id="icon-toggle-pwd"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Botão Principal de Submissão -->
+          <button type="submit" id="btn-auth-submit" class="btn-auth-submit">
+            <span id="btn-auth-submit-text">Entrar</span>
+            <i data-lucide="arrow-right" class="btn-arrow-icon"></i>
+          </button>
+        </form>
+
+        <!-- Footer com Informações de Segurança -->
+        <p class="auth-footer-help">
+          Seus dados e senhas são criptografados com segurança na nuvem Supabase.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Perfil de Usuário Logado -->
+  <div id="profile-modal-overlay" class="modal-overlay profile-modal-overlay" aria-hidden="true">
+    <div class="modal-dialog profile-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-title">
+      <div class="modal-header">
+        <h3 id="profile-title" style="font-size: 1.15rem; font-weight: 700;">Minha Conta</h3>
+        <button id="profile-close-btn" class="modal-close-btn" aria-label="Fechar janela">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="profile-modal-body">
+        <div class="profile-user-card">
+          <div class="profile-avatar" id="profile-user-avatar">JP</div>
+          <div class="profile-user-info">
+            <h4 id="profile-user-name" class="profile-name">Nome do Usuário</h4>
+            <span id="profile-user-email" class="profile-email">usuario@exemplo.com</span>
+            <span class="profile-badge-provider" id="profile-user-provider">
+              <i data-lucide="shield-check"></i> Conta Supabase
+            </span>
+          </div>
+        </div>
+
+        <div class="profile-stats-grid">
+          <div class="profile-stat-box">
+            <span class="stat-num" id="profile-favorites-count">0</span>
+            <span class="stat-label">Favoritos Salvos</span>
+          </div>
+          <div class="profile-stat-box">
+            <span class="stat-num" id="profile-level-label">Iniciante</span>
+            <span class="stat-label">Nível Atual</span>
+          </div>
+        </div>
+
+        <div class="profile-sync-status">
+          <i data-lucide="cloud-check" class="sync-icon"></i>
+          <span>Sincronização na nuvem ativa</span>
+        </div>
+
+        <button type="button" id="btn-logout" class="btn-logout">
+          <i data-lucide="log-out"></i>
+          <span>Sair da Conta</span>
+        </button>
       </div>
     </div>
   </div>

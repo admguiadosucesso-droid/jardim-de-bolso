@@ -20,6 +20,12 @@ class JardimApp {
     this.searchQuery = '';
     this.toastTimer = null;
 
+    // Estado de Autenticação Supabase
+    this.currentUser = null;
+    this.currentUserSession = null;
+    this.authMode = 'login'; // 'login' ou 'signup'
+    this.supabase = null;
+
     this.dom = {
       content: document.getElementById('main-content'),
       tabBtns: document.querySelectorAll('.nav-tab-btn'),
@@ -34,7 +40,40 @@ class JardimApp {
       modalOverlay: document.getElementById('modal-overlay'),
       modalTitle: document.getElementById('modal-title'),
       modalBody: document.getElementById('modal-body'),
-      modalCloseBtn: document.getElementById('modal-close-btn')
+      modalCloseBtn: document.getElementById('modal-close-btn'),
+
+      // Elementos de Autenticação e Perfil
+      btnAuthUser: document.getElementById('btn-auth-user'),
+      labelAuthUser: document.getElementById('label-auth-user'),
+      authModalOverlay: document.getElementById('auth-modal-overlay'),
+      authCloseBtn: document.getElementById('auth-close-btn'),
+      tabAuthLogin: document.getElementById('tab-auth-login'),
+      tabAuthSignup: document.getElementById('tab-auth-signup'),
+      btnGoogleLogin: document.getElementById('btn-google-login'),
+      authAlert: document.getElementById('auth-alert'),
+      authAlertIcon: document.getElementById('auth-alert-icon'),
+      authAlertMsg: document.getElementById('auth-alert-msg'),
+      authForm: document.getElementById('auth-form'),
+      groupAuthName: document.getElementById('group-auth-name'),
+      authInputName: document.getElementById('auth-input-name'),
+      authInputEmail: document.getElementById('auth-input-email'),
+      authInputPassword: document.getElementById('auth-input-password'),
+      btnForgotPasswordLink: document.getElementById('btn-forgot-password-link'),
+      btnTogglePassword: document.getElementById('btn-toggle-password'),
+      iconTogglePwd: document.getElementById('icon-toggle-pwd'),
+      btnAuthSubmit: document.getElementById('btn-auth-submit'),
+      btnAuthSubmitText: document.getElementById('btn-auth-submit-text'),
+
+      // Modal de Perfil
+      profileModalOverlay: document.getElementById('profile-modal-overlay'),
+      profileCloseBtn: document.getElementById('profile-close-btn'),
+      profileUserAvatar: document.getElementById('profile-user-avatar'),
+      profileUserName: document.getElementById('profile-user-name'),
+      profileUserEmail: document.getElementById('profile-user-email'),
+      profileUserProvider: document.getElementById('profile-user-provider'),
+      profileFavoritesCount: document.getElementById('profile-favorites-count'),
+      profileLevelLabel: document.getElementById('profile-level-label'),
+      btnLogout: document.getElementById('btn-logout')
     };
 
     this.init();
@@ -74,19 +113,354 @@ class JardimApp {
     this.syncLevelToCloud(level);
   }
 
+  getEffectiveId() {
+    return this.currentUser ? `usr_${this.currentUser.id}` : this.deviceId;
+  }
+
+  getAuthHeaders() {
+    const token = this.currentUserSession?.access_token || SUPABASE_CONFIG.anonKey;
+    return {
+      'apikey': SUPABASE_CONFIG.anonKey,
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
+  }
+
+  initAuth() {
+    if (typeof window !== 'undefined' && window.supabase && window.supabase.createClient) {
+      try {
+        this.supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+
+        this.supabase.auth.onAuthStateChange(async (event, session) => {
+          this.currentUserSession = session;
+          this.currentUser = session?.user || null;
+          this.updateUserAuthUI();
+
+          if (event === 'SIGNED_IN') {
+            this.closeAuthModal();
+            const displayName = this.getUserDisplayName();
+            this.showToast(`Conectado como ${displayName}`);
+            await this.syncCloudData();
+            if (this.currentTab === 'meujardim') {
+              this.renderMeuJardim();
+            }
+          } else if (event === 'SIGNED_OUT') {
+            this.updateUserAuthUI();
+            if (this.currentTab === 'meujardim') {
+              this.renderMeuJardim();
+            }
+          }
+        });
+
+        this.checkExistingSession();
+      } catch (err) {
+        console.warn('Erro ao inicializar Supabase Auth:', err);
+      }
+    }
+  }
+
+  async checkExistingSession() {
+    if (!this.supabase) return;
+    try {
+      const { data: { session } } = await this.supabase.auth.getSession();
+      if (session && session.user) {
+        this.currentUserSession = session;
+        this.currentUser = session.user;
+        this.updateUserAuthUI();
+      }
+    } catch (e) {
+      console.warn('Erro ao checar sessão:', e);
+    }
+  }
+
+  getUserDisplayName() {
+    if (!this.currentUser) return 'Visitante';
+    const meta = this.currentUser.user_metadata || {};
+    return meta.full_name || meta.display_name || meta.name || (this.currentUser.email ? this.currentUser.email.split('@')[0] : 'Jardineiro(a)');
+  }
+
+  getUserInitials() {
+    const name = this.getUserDisplayName();
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  }
+
+  updateUserAuthUI() {
+    if (this.dom.labelAuthUser && this.dom.btnAuthUser) {
+      if (this.currentUser) {
+        const name = this.getUserDisplayName();
+        const firstName = name.split(' ')[0];
+        this.dom.labelAuthUser.textContent = firstName.length > 10 ? firstName.slice(0, 9) + '…' : firstName;
+        this.dom.btnAuthUser.classList.add('logged-in');
+        this.dom.btnAuthUser.title = `Conectado como ${name} (${this.currentUser.email})`;
+        const icon = this.dom.btnAuthUser.querySelector('i');
+        if (icon) icon.setAttribute('data-lucide', 'user-check');
+      } else {
+        this.dom.labelAuthUser.textContent = 'Entrar';
+        this.dom.btnAuthUser.classList.remove('logged-in');
+        this.dom.btnAuthUser.title = 'Entrar na sua conta';
+        const icon = this.dom.btnAuthUser.querySelector('i');
+        if (icon) icon.setAttribute('data-lucide', 'user');
+      }
+      this.refreshIcons();
+    }
+  }
+
+  openAuthModal(mode = 'login') {
+    this.authMode = mode;
+    this.hideAuthAlert();
+    this.updateAuthModalTabs();
+    if (this.dom.authModalOverlay) {
+      this.dom.authModalOverlay.classList.add('active');
+      this.dom.authModalOverlay.setAttribute('aria-hidden', 'false');
+      setTimeout(() => {
+        if (this.dom.authInputEmail) this.dom.authInputEmail.focus();
+      }, 100);
+    }
+  }
+
+  closeAuthModal() {
+    if (this.dom.authModalOverlay) {
+      this.dom.authModalOverlay.classList.remove('active');
+      this.dom.authModalOverlay.setAttribute('aria-hidden', 'true');
+    }
+    this.hideAuthAlert();
+  }
+
+  updateAuthModalTabs() {
+    const isLogin = this.authMode === 'login';
+    if (this.dom.tabAuthLogin) {
+      this.dom.tabAuthLogin.classList.toggle('active', isLogin);
+      this.dom.tabAuthLogin.setAttribute('aria-selected', isLogin ? 'true' : 'false');
+    }
+    if (this.dom.tabAuthSignup) {
+      this.dom.tabAuthSignup.classList.toggle('active', !isLogin);
+      this.dom.tabAuthSignup.setAttribute('aria-selected', !isLogin ? 'true' : 'false');
+    }
+    if (this.dom.groupAuthName) {
+      this.dom.groupAuthName.style.display = isLogin ? 'none' : 'flex';
+    }
+    if (this.dom.btnForgotPasswordLink) {
+      this.dom.btnForgotPasswordLink.style.display = isLogin ? 'inline-block' : 'none';
+    }
+    if (this.dom.btnAuthSubmitText) {
+      this.dom.btnAuthSubmitText.textContent = isLogin ? 'Entrar na Minha Conta' : 'Criar Minha Conta Grátis';
+    }
+    this.hideAuthAlert();
+  }
+
+  showAuthAlert(message, type = 'error') {
+    if (!this.dom.authAlert || !this.dom.authAlertMsg) return;
+    this.dom.authAlert.className = `auth-alert ${type}`;
+    this.dom.authAlertMsg.textContent = message;
+    if (this.dom.authAlertIcon) {
+      const iconName = type === 'success' ? 'check-circle' : (type === 'info' ? 'info' : 'alert-circle');
+      this.dom.authAlertIcon.setAttribute('data-lucide', iconName);
+    }
+    this.dom.authAlert.style.display = 'flex';
+    this.refreshIcons();
+  }
+
+  hideAuthAlert() {
+    if (this.dom.authAlert) {
+      this.dom.authAlert.style.display = 'none';
+    }
+  }
+
+  async handleGoogleLogin() {
+    if (!this.supabase) {
+      this.showAuthAlert('Serviço de autenticação não inicializado.', 'error');
+      return;
+    }
+    try {
+      this.hideAuthAlert();
+      const { data, error } = await this.supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      if (error) {
+        if (error.message && error.message.toLowerCase().includes('not enabled')) {
+          this.showAuthAlert('O login do Google precisa ser ativado no painel do Supabase (Authentication > Providers > Google). Use E-mail e Senha para entrar agora!', 'info');
+        } else {
+          this.showAuthAlert(error.message, 'error');
+        }
+      }
+    } catch (err) {
+      this.showAuthAlert(err.message || 'Falha ao conectar com o Google.', 'error');
+    }
+  }
+
+  async handleEmailAuth(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!this.supabase) {
+      this.showAuthAlert('Serviço de autenticação indisponível.', 'error');
+      return;
+    }
+
+    const email = (this.dom.authInputEmail?.value || '').trim();
+    const password = (this.dom.authInputPassword?.value || '');
+    const name = (this.dom.authInputName?.value || '').trim();
+
+    if (!email || !email.includes('@')) {
+      this.showAuthAlert('Informe um endereço de e-mail válido.', 'error');
+      this.dom.authInputEmail?.focus();
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      this.showAuthAlert('A senha deve conter no mínimo 6 caracteres.', 'error');
+      this.dom.authInputPassword?.focus();
+      return;
+    }
+
+    const btnSubmit = this.dom.btnAuthSubmit;
+    const btnText = this.dom.btnAuthSubmitText;
+    const originalText = btnText ? btnText.textContent : '';
+    if (btnSubmit) btnSubmit.disabled = true;
+    if (btnText) btnText.textContent = this.authMode === 'login' ? 'Entrando...' : 'Criando conta...';
+    this.hideAuthAlert();
+
+    try {
+      if (this.authMode === 'login') {
+        const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          if (error.message.includes('Invalid login credentials')) {
+            this.showAuthAlert('E-mail ou senha incorretos. Verifique suas credenciais.', 'error');
+          } else if (error.message.includes('Email not confirmed')) {
+            this.showAuthAlert('E-mail não confirmado. Verifique sua caixa de entrada para ativar a conta.', 'info');
+          } else {
+            this.showAuthAlert(error.message, 'error');
+          }
+        } else {
+          this.closeAuthModal();
+        }
+      } else {
+        const { data, error } = await this.supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              display_name: name || email.split('@')[0],
+              full_name: name || ''
+            }
+          }
+        });
+        if (error) {
+          if (error.message.includes('already registered')) {
+            this.showAuthAlert('Este e-mail já está cadastrado. Alterne para a aba "Entrar" acima.', 'error');
+          } else {
+            this.showAuthAlert(error.message, 'error');
+          }
+        } else if (data.session) {
+          this.closeAuthModal();
+          this.showToast('Conta criada com sucesso! Bem-vindo(a)!');
+        } else {
+          this.showAuthAlert('Conta criada com sucesso! Enviamos um link de confirmação para seu e-mail.', 'success');
+        }
+      }
+    } catch (err) {
+      this.showAuthAlert(err.message || 'Erro inesperado ao conectar.', 'error');
+    } finally {
+      if (btnSubmit) btnSubmit.disabled = false;
+      if (btnText) btnText.textContent = originalText;
+    }
+  }
+
+  async handleForgotPassword() {
+    const email = (this.dom.authInputEmail?.value || '').trim();
+    if (!email || !email.includes('@')) {
+      this.showAuthAlert('Digite seu e-mail no campo acima para recuperar sua senha.', 'info');
+      this.dom.authInputEmail?.focus();
+      return;
+    }
+    if (!this.supabase) return;
+    try {
+      const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin
+      });
+      if (error) {
+        this.showAuthAlert(error.message, 'error');
+      } else {
+        this.showAuthAlert(`Instruções de recuperação enviadas para ${email}.`, 'success');
+      }
+    } catch (err) {
+      this.showAuthAlert('Falha ao enviar e-mail de recuperação.', 'error');
+    }
+  }
+
+  togglePasswordVisibility() {
+    if (!this.dom.authInputPassword) return;
+    const isPwd = this.dom.authInputPassword.type === 'password';
+    this.dom.authInputPassword.type = isPwd ? 'text' : 'password';
+    if (this.dom.iconTogglePwd) {
+      this.dom.iconTogglePwd.setAttribute('data-lucide', isPwd ? 'eye-off' : 'eye');
+      this.refreshIcons();
+    }
+  }
+
+  openProfileModal() {
+    if (!this.currentUser) {
+      this.openAuthModal('login');
+      return;
+    }
+    const name = this.getUserDisplayName();
+    const initials = this.getUserInitials();
+    const email = this.currentUser.email || '';
+    const nivelObj = NIVEIS[this.userLevel] || NIVEIS[1];
+    const isGoogle = this.currentUser.app_metadata?.provider === 'google';
+
+    if (this.dom.profileUserAvatar) this.dom.profileUserAvatar.textContent = initials;
+    if (this.dom.profileUserName) this.dom.profileUserName.textContent = name;
+    if (this.dom.profileUserEmail) this.dom.profileUserEmail.textContent = email;
+    if (this.dom.profileFavoritesCount) this.dom.profileFavoritesCount.textContent = this.favorites.size;
+    if (this.dom.profileLevelLabel) this.dom.profileLevelLabel.textContent = nivelObj.nome;
+    if (this.dom.profileUserProvider) {
+      this.dom.profileUserProvider.innerHTML = `<i data-lucide="${isGoogle ? 'chrome' : 'shield-check'}"></i> Conta ${isGoogle ? 'Google' : 'E-mail/Senha'}`;
+    }
+
+    if (this.dom.profileModalOverlay) {
+      this.dom.profileModalOverlay.classList.add('active');
+      this.dom.profileModalOverlay.setAttribute('aria-hidden', 'false');
+      this.refreshIcons();
+    }
+  }
+
+  closeProfileModal() {
+    if (this.dom.profileModalOverlay) {
+      this.dom.profileModalOverlay.classList.remove('active');
+      this.dom.profileModalOverlay.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  async handleLogout() {
+    if (!this.supabase) return;
+    try {
+      await this.supabase.auth.signOut();
+      this.closeProfileModal();
+      this.showToast('Você saiu da sua conta.');
+    } catch (err) {
+      console.warn('Erro ao sair da conta:', err);
+    }
+  }
+
   async syncLevelToCloud(level) {
     if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) return;
+    const effectiveId = this.getEffectiveId();
+    const headers = this.getAuthHeaders();
     try {
       await fetch(`${SUPABASE_CONFIG.url}/rest/v1/user_settings`, {
         method: 'POST',
         headers: {
-          'apikey': SUPABASE_CONFIG.anonKey,
-          'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
-          'Content-Type': 'application/json',
+          ...headers,
           'Prefer': 'resolution=merge-duplicates'
         },
         body: JSON.stringify({
-          device_id: this.deviceId,
+          device_id: effectiveId,
           user_level: level,
           updated_at: new Date().toISOString()
         })
@@ -121,16 +495,13 @@ class JardimApp {
 
   async syncCloudData() {
     if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) return;
-    const headers = {
-      'apikey': SUPABASE_CONFIG.anonKey,
-      'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
-      'Content-Type': 'application/json'
-    };
+    const effectiveId = this.getEffectiveId();
+    const headers = this.getAuthHeaders();
 
     // 1. Sincronizar Favoritos na Nuvem
     try {
       const favRes = await fetch(
-        `${SUPABASE_CONFIG.url}/rest/v1/user_favorites?device_id=eq.${encodeURIComponent(this.deviceId)}&select=item_id`,
+        `${SUPABASE_CONFIG.url}/rest/v1/user_favorites?device_id=eq.${encodeURIComponent(effectiveId)}&select=item_id`,
         { method: 'GET', headers }
       );
       if (favRes.ok) {
@@ -150,7 +521,7 @@ class JardimApp {
         const toUpload = Array.from(this.favorites).filter(id => !cloudIds.has(id));
         if (toUpload.length > 0) {
           const bodyPayload = toUpload.map(itemId => ({
-            device_id: this.deviceId,
+            device_id: effectiveId,
             item_id: itemId
           }));
           await fetch(`${SUPABASE_CONFIG.url}/rest/v1/user_favorites`, {
@@ -174,7 +545,7 @@ class JardimApp {
     // 2. Sincronizar Nível do Usuário na Nuvem
     try {
       const settRes = await fetch(
-        `${SUPABASE_CONFIG.url}/rest/v1/user_settings?device_id=eq.${encodeURIComponent(this.deviceId)}&select=user_level`,
+        `${SUPABASE_CONFIG.url}/rest/v1/user_settings?device_id=eq.${encodeURIComponent(effectiveId)}&select=user_level`,
         { method: 'GET', headers }
       );
       if (settRes.ok) {
@@ -192,7 +563,6 @@ class JardimApp {
             }
           }
         } else {
-          // Registrar configuração inicial na nuvem
           this.syncLevelToCloud(this.userLevel);
         }
       }
@@ -202,6 +572,7 @@ class JardimApp {
   }
 
   init() {
+    this.initAuth();
     if (this.dom.bottomNavWrapper) {
       this.dom.bottomNavWrapper.dataset.activeTab = this.currentTab || 'inicio';
     }
@@ -221,6 +592,70 @@ class JardimApp {
       });
     });
 
+    // Clique no botão de login / perfil no topo
+    if (this.dom.btnAuthUser) {
+      this.dom.btnAuthUser.addEventListener('click', () => {
+        if (this.currentUser) {
+          this.openProfileModal();
+        } else {
+          this.openAuthModal('login');
+        }
+      });
+    }
+
+    // Modal de Autenticação
+    if (this.dom.authCloseBtn) {
+      this.dom.authCloseBtn.addEventListener('click', () => this.closeAuthModal());
+    }
+    if (this.dom.authModalOverlay) {
+      this.dom.authModalOverlay.addEventListener('click', (e) => {
+        if (e.target === this.dom.authModalOverlay) this.closeAuthModal();
+      });
+    }
+
+    // Alternar abas de Login e Cadastro
+    if (this.dom.tabAuthLogin) {
+      this.dom.tabAuthLogin.addEventListener('click', () => this.openAuthModal('login'));
+    }
+    if (this.dom.tabAuthSignup) {
+      this.dom.tabAuthSignup.addEventListener('click', () => this.openAuthModal('signup'));
+    }
+
+    // Login com Google
+    if (this.dom.btnGoogleLogin) {
+      this.dom.btnGoogleLogin.addEventListener('click', () => this.handleGoogleLogin());
+    }
+
+    // Formulário de E-mail / Senha
+    if (this.dom.authForm) {
+      this.dom.authForm.addEventListener('submit', (e) => this.handleEmailAuth(e));
+    }
+
+    // Alternar visibilidade da senha
+    if (this.dom.btnTogglePassword) {
+      this.dom.btnTogglePassword.addEventListener('click', () => this.togglePasswordVisibility());
+    }
+
+    // Esqueci a senha
+    if (this.dom.btnForgotPasswordLink) {
+      this.dom.btnForgotPasswordLink.addEventListener('click', () => this.handleForgotPassword());
+    }
+
+    // Modal de Perfil
+    if (this.dom.profileCloseBtn) {
+      this.dom.profileCloseBtn.addEventListener('click', () => this.closeProfileModal());
+    }
+    if (this.dom.profileModalOverlay) {
+      this.dom.profileModalOverlay.addEventListener('click', (e) => {
+        if (e.target === this.dom.profileModalOverlay) this.closeProfileModal();
+      });
+    }
+
+    // Sair da conta
+    if (this.dom.btnLogout) {
+      this.dom.btnLogout.addEventListener('click', () => this.handleLogout());
+    }
+
     // Clique na pílula de nível no topo abre a tela de perfil/nível
     if (this.dom.userLevelHeaderPill) {
       this.dom.userLevelHeaderPill.addEventListener('click', () => {
@@ -238,9 +673,13 @@ class JardimApp {
       });
     }
 
-    // Tecla ESC fecha modal
+    // Tecla ESC fecha modais
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') this.closeModal();
+      if (e.key === 'Escape') {
+        this.closeModal();
+        this.closeAuthModal();
+        this.closeProfileModal();
+      }
     });
   }
 
@@ -364,24 +803,21 @@ class JardimApp {
 
   async syncFavoriteToCloud(itemId, isAdding) {
     if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anonKey) return;
-    const headers = {
-      'apikey': SUPABASE_CONFIG.anonKey,
-      'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
-      'Content-Type': 'application/json'
-    };
+    const effectiveId = this.getEffectiveId();
+    const headers = this.getAuthHeaders();
     try {
       if (isAdding) {
         await fetch(`${SUPABASE_CONFIG.url}/rest/v1/user_favorites`, {
           method: 'POST',
           headers: { ...headers, 'Prefer': 'resolution=ignore-duplicates' },
           body: JSON.stringify({
-            device_id: this.deviceId,
+            device_id: effectiveId,
             item_id: itemId
           })
         });
       } else {
         await fetch(
-          `${SUPABASE_CONFIG.url}/rest/v1/user_favorites?device_id=eq.${encodeURIComponent(this.deviceId)}&item_id=eq.${encodeURIComponent(itemId)}`,
+          `${SUPABASE_CONFIG.url}/rest/v1/user_favorites?device_id=eq.${encodeURIComponent(effectiveId)}&item_id=eq.${encodeURIComponent(itemId)}`,
           { method: 'DELETE', headers }
         );
       }
@@ -900,6 +1336,21 @@ class JardimApp {
         </div>
       </div>
 
+      ${!this.currentUser ? `
+        <div class="auth-sync-banner" id="banner-auth-sync">
+          <div class="auth-sync-banner-content">
+            <div class="auth-sync-banner-icon">
+              <i data-lucide="cloud"></i>
+            </div>
+            <div class="auth-sync-banner-text">
+              <strong>Sincronize em qualquer aparelho</strong>
+              <p>Entre ou crie sua conta para manter seus itens salvos protegidos na nuvem.</p>
+            </div>
+          </div>
+          <button id="btn-banner-login" class="btn-banner-login">Conectar</button>
+        </div>
+      ` : ''}
+
       <section class="items-list">
         ${itensSalvos.length > 0
           ? itensSalvos.map(item => this.renderItemCardHtml(item, true)).join('')
@@ -917,6 +1368,10 @@ class JardimApp {
           `}
       </section>
     `;
+
+    document.getElementById('btn-banner-login')?.addEventListener('click', () => {
+      this.openAuthModal('login');
+    });
 
     document.getElementById('btn-go-explore')?.addEventListener('click', () => {
       this.switchTab('inicio');
