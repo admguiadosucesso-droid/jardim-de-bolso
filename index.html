@@ -16,7 +16,7 @@
   <link rel="alternate icon" type="image/svg+xml" href="./FAVICOM.svg" />
   <link rel="apple-touch-icon" href="./icon.svg" />
   <link rel="manifest" href="./manifest.json" />
-  <link rel="stylesheet" href="./style.css?v=13" />
+  <link rel="stylesheet" href="./style.css?v=14" />
 
   <!-- Supabase Client JS Oficial -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -136,6 +136,7 @@
           <img src="./icon.svg" alt="Ícone Jardim Perene" class="auth-card-logo-img" />
         </div>
         <h2 id="auth-modal-title" class="figma-glass-title">Entrar</h2>
+        <p id="auth-modal-subtitle" class="figma-glass-subtitle">Entre em sua conta</p>
       </div>
 
       <!-- Abas para compatibilidade de eventos -->
@@ -267,13 +268,13 @@
   </div>
 
   <!-- Script Principal com Módulos ES6 -->
-  <script type="module" src="./app.js?v=13"></script>
+  <script type="module" src="./app.js?v=14"></script>
 
   <!-- Registro do Service Worker (PWA Offline) -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=13').then((reg) => {
+        navigator.serviceWorker.register('./sw.js?v=14').then((reg) => {
           reg.update();
         }).catch((err) => {
           console.debug('SW registration skipped:', err);

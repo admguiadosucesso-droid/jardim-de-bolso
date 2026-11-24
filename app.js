@@ -276,8 +276,10 @@ class JardimApp {
       this.dom.authModalTitle.textContent = isLogin ? 'Entrar' : 'Criar Conta';
     }
     if (this.dom.authModalSubtitle) {
-      this.dom.authModalSubtitle.textContent = '';
-      this.dom.authModalSubtitle.style.display = 'none';
+      this.dom.authModalSubtitle.style.display = 'block';
+      this.dom.authModalSubtitle.textContent = isLogin 
+        ? 'Entre em sua conta' 
+        : 'Crie sua conta para salvar suas plantas e preferências.';
     }
     if (this.dom.groupAuthName) {
       this.dom.groupAuthName.style.display = isLogin ? 'none' : 'flex';
