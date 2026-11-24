@@ -127,36 +127,50 @@ class JardimApp {
   }
 
   initAuth() {
-    if (typeof window !== 'undefined' && window.supabase && window.supabase.createClient) {
-      try {
-        this.supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+    let attempts = 0;
+    const setup = () => {
+      attempts++;
+      if (typeof window !== 'undefined' && window.supabase && window.supabase.createClient) {
+        try {
+          this.supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
-        this.supabase.auth.onAuthStateChange(async (event, session) => {
-          this.currentUserSession = session;
-          this.currentUser = session?.user || null;
-          this.updateUserAuthUI();
-
-          if (event === 'SIGNED_IN') {
-            this.closeAuthModal();
-            const displayName = this.getUserDisplayName();
-            this.showToast(`Conectado como ${displayName}`);
-            await this.syncCloudData();
-            if (this.currentTab === 'meujardim') {
-              this.renderMeuJardim();
-            }
-          } else if (event === 'SIGNED_OUT') {
+          this.supabase.auth.onAuthStateChange(async (event, session) => {
+            this.currentUserSession = session;
+            this.currentUser = session?.user || null;
             this.updateUserAuthUI();
-            if (this.currentTab === 'meujardim') {
-              this.renderMeuJardim();
-            }
-          }
-        });
 
-        this.checkExistingSession();
-      } catch (err) {
-        console.warn('Erro ao inicializar Supabase Auth:', err);
+            if (event === 'SIGNED_IN') {
+              this.closeAuthModal();
+              const displayName = this.getUserDisplayName();
+              this.showToast(`Conectado como ${displayName}`);
+              await this.syncCloudData();
+              if (this.currentTab === 'meujardim') {
+                this.renderMeuJardim();
+              }
+            } else if (event === 'SIGNED_OUT') {
+              this.updateUserAuthUI();
+              if (this.currentTab === 'meujardim') {
+                this.renderMeuJardim();
+              }
+            }
+          });
+
+          this.checkExistingSession();
+        } catch (err) {
+          console.warn('Erro ao inicializar Supabase Auth:', err);
+        }
+      } else if (attempts < 20) {
+        setTimeout(setup, 150);
       }
-    }
+    };
+    setup();
+
+    // Abre automaticamente a tela de login para quem ainda não estiver logado
+    setTimeout(() => {
+      if (!this.currentUser) {
+        this.openAuthModal('login');
+      }
+    }, 400);
   }
 
   async checkExistingSession() {
@@ -168,12 +182,11 @@ class JardimApp {
         this.currentUser = session.user;
         this.updateUserAuthUI();
       } else {
-        // Se o usuário ainda não está conectado, abre automaticamente a tela de login
         setTimeout(() => {
           if (!this.currentUser) {
             this.openAuthModal('login');
           }
-        }, 350);
+        }, 200);
       }
     } catch (e) {
       console.warn('Erro ao checar sessão:', e);
@@ -221,6 +234,7 @@ class JardimApp {
     this.hideAuthAlert();
     this.updateAuthModalTabs();
     if (this.dom.authModalOverlay) {
+      this.dom.authModalOverlay.classList.add('open');
       this.dom.authModalOverlay.classList.add('active');
       this.dom.authModalOverlay.setAttribute('aria-hidden', 'false');
       setTimeout(() => {
@@ -231,6 +245,7 @@ class JardimApp {
 
   closeAuthModal() {
     if (this.dom.authModalOverlay) {
+      this.dom.authModalOverlay.classList.remove('open');
       this.dom.authModalOverlay.classList.remove('active');
       this.dom.authModalOverlay.setAttribute('aria-hidden', 'true');
     }
@@ -431,6 +446,7 @@ class JardimApp {
     }
 
     if (this.dom.profileModalOverlay) {
+      this.dom.profileModalOverlay.classList.add('open');
       this.dom.profileModalOverlay.classList.add('active');
       this.dom.profileModalOverlay.setAttribute('aria-hidden', 'false');
       this.refreshIcons();
@@ -439,6 +455,7 @@ class JardimApp {
 
   closeProfileModal() {
     if (this.dom.profileModalOverlay) {
+      this.dom.profileModalOverlay.classList.remove('open');
       this.dom.profileModalOverlay.classList.remove('active');
       this.dom.profileModalOverlay.setAttribute('aria-hidden', 'true');
     }

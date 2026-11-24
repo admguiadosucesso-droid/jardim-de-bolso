@@ -1609,7 +1609,8 @@ svg.lucide, [data-lucide] {
   transition: opacity 0.2s ease;
 }
 
-.modal-overlay.open {
+.modal-overlay.open,
+.modal-overlay.active {
   opacity: 1;
   pointer-events: auto;
 }
@@ -1628,7 +1629,8 @@ svg.lucide, [data-lucide] {
   transition: transform 0.2s ease;
 }
 
-.modal-overlay.open .modal-dialog {
+.modal-overlay.open .modal-dialog,
+.modal-overlay.active .modal-dialog {
   transform: scale(1);
 }
 
